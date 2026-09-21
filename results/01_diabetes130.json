@@ -1,0 +1,301 @@
+{
+  "meta": {
+    "name": "Diabetes 130-US hospitals",
+    "raw_shape": [
+      101766,
+      50
+    ],
+    "n_features": 179,
+    "classes": [
+      "NO",
+      ">30",
+      "<30"
+    ],
+    "kind": "tabular"
+  },
+  "results": [
+    {
+      "framework": "Scratch (NumPy)",
+      "dataset": "Diabetes 130-US hospitals",
+      "model": "MLP 179-128-64-3",
+      "n_params": 31491,
+      "epochs": 15,
+      "train_seconds": 8.48,
+      "train_loss": 0.8237,
+      "test_accuracy": 0.6094040302986995,
+      "precision_macro": 0.47982546851756824,
+      "recall_macro": 0.3727903530210504,
+      "f1_macro": 0.34499540653644506,
+      "history": {
+        "loss": [
+          0.9718962197434412,
+          0.881564507201382,
+          0.8645658414113467,
+          0.8554812922869643,
+          0.8476154194574922,
+          0.8467233698117679,
+          0.8423593523295503,
+          0.8384440897806594,
+          0.836765808601902,
+          0.8346146410458708,
+          0.8317170777277315,
+          0.8291779879021318,
+          0.8281655428616423,
+          0.8252569777236137,
+          0.8237311872717452
+        ],
+        "val_acc": [
+          0.6003287123052737,
+          0.6041875089323996,
+          0.6044733457195941,
+          0.6065456624267543,
+          0.6089038159211091,
+          0.6092611119051022,
+          0.6092611119051022,
+          0.6091896527083036,
+          0.6086179791339146,
+          0.6062598256395598,
+          0.6071173360011434,
+          0.6099757038730884,
+          0.6086179791339146,
+          0.6072602543947406,
+          0.6094040302986995
+        ],
+        "epoch_seconds": [
+          0.47741880000012316,
+          0.4859827000000223,
+          0.5424463999997897,
+          0.6451008999997612,
+          0.5599172000002,
+          0.5043915000001107,
+          0.5220908999999665,
+          0.5201943000001847,
+          0.49545700000044235,
+          0.5002070000000458,
+          0.5268412999998873,
+          0.5364689000002727,
+          0.5275465999998232,
+          0.599954599999819,
+          0.5754446999999345
+        ]
+      },
+      "confusion": [
+        [
+          7769,
+          546,
+          23
+        ],
+        [
+          3641,
+          734,
+          30
+        ],
+        [
+          1020,
+          206,
+          25
+        ]
+      ]
+    },
+    {
+      "framework": "TensorFlow/Keras",
+      "dataset": "Diabetes 130-US hospitals",
+      "model": "MLP 179-128-64-3",
+      "n_params": 31491,
+      "epochs": 15,
+      "train_seconds": 13.79,
+      "train_loss": 0.8174,
+      "test_accuracy": 0.6076890095755324,
+      "precision_macro": 0.4838966724811331,
+      "recall_macro": 0.38422290983131074,
+      "f1_macro": 0.3685920896608068,
+      "history": {
+        "loss": [
+          0.9071406722068787,
+          0.8652920722961426,
+          0.8531498908996582,
+          0.8478716611862183,
+          0.8414750695228577,
+          0.838276207447052,
+          0.8361555933952332,
+          0.8330396413803101,
+          0.8296316266059875,
+          0.8290868401527405,
+          0.8251979947090149,
+          0.8235520124435425,
+          0.8215001225471497,
+          0.8192616105079651,
+          0.8173790574073792
+        ],
+        "val_acc": [
+          0.603187084197998,
+          0.607760488986969,
+          0.6066170930862427,
+          0.6084750890731812,
+          0.6060454249382019,
+          0.6094754934310913,
+          0.6096184253692627,
+          0.6089752912521362,
+          0.6090467572212219,
+          0.609832763671875,
+          0.6104044318199158,
+          0.6116192936897278,
+          0.6065456867218018,
+          0.6074031591415405,
+          0.6076890230178833
+        ]
+      },
+      "confusion": [
+        [
+          7478,
+          815,
+          45
+        ],
+        [
+          3385,
+          986,
+          34
+        ],
+        [
+          974,
+          237,
+          40
+        ]
+      ]
+    },
+    {
+      "framework": "PyTorch",
+      "dataset": "Diabetes 130-US hospitals",
+      "model": "MLP 179-128-64-3",
+      "n_params": 31491,
+      "epochs": 15,
+      "train_seconds": 19.32,
+      "train_loss": 0.8135,
+      "test_accuracy": 0.6105473774474774,
+      "precision_macro": 0.5128792021096745,
+      "recall_macro": 0.3859844455687498,
+      "f1_macro": 0.3694382289752345,
+      "history": {
+        "loss": [
+          0.8732626165973542,
+          0.849257524699381,
+          0.8420558141791112,
+          0.8401756264847707,
+          0.836345262451259,
+          0.8334393650973768,
+          0.830579923168165,
+          0.8286294414572519,
+          0.8255155328746255,
+          0.8239927838926446,
+          0.8201476653961286,
+          0.8191194185927578,
+          0.816075720199167,
+          0.8155111616060614,
+          0.8134679274471928
+        ],
+        "val_acc": [
+          0.6093325711019009,
+          0.6103329998570816,
+          0.6094754894954981,
+          0.6083321423467201,
+          0.6105473774474774,
+          0.6109046734314706,
+          0.6084036015435187,
+          0.6106902958410747,
+          0.6042589681291982,
+          0.6086179791339146,
+          0.6109761326282692,
+          0.6107617550378733,
+          0.6094754894954981,
+          0.6121194797770473,
+          0.6105473774474774
+        ]
+      },
+      "confusion": [
+        [
+          7460,
+          860,
+          18
+        ],
+        [
+          3328,
+          1054,
+          23
+        ],
+        [
+          939,
+          282,
+          30
+        ]
+      ]
+    }
+  ],
+  "component_table": [
+    {
+      "Component": "Data loading",
+      "Scratch": "ass4_utils -> NumPy arrays",
+      "TensorFlow/Keras": "same arrays",
+      "PyTorch": "same arrays"
+    },
+    {
+      "Component": "Preprocessing",
+      "Scratch": "ass4_utils (shared)",
+      "TensorFlow/Keras": "shared",
+      "PyTorch": "shared"
+    },
+    {
+      "Component": "Model definition",
+      "Scratch": "S.Sequential([...])",
+      "TensorFlow/Keras": "keras.Sequential([...])",
+      "PyTorch": "nn.Module + nn.Sequential"
+    },
+    {
+      "Component": "Dense layer",
+      "Scratch": "S.Dense (x@W+b by hand)",
+      "TensorFlow/Keras": "keras.layers.Dense",
+      "PyTorch": "nn.Linear"
+    },
+    {
+      "Component": "Activation",
+      "Scratch": "S.ReLU (mask multiply)",
+      "TensorFlow/Keras": "activation='relu'",
+      "PyTorch": "nn.ReLU"
+    },
+    {
+      "Component": "Regularisation",
+      "Scratch": "S.Dropout (inverted)",
+      "TensorFlow/Keras": "keras.layers.Dropout",
+      "PyTorch": "nn.Dropout"
+    },
+    {
+      "Component": "Loss",
+      "Scratch": "S.SoftmaxCrossEntropy",
+      "TensorFlow/Keras": "SparseCategoricalCrossentropy",
+      "PyTorch": "nn.CrossEntropyLoss"
+    },
+    {
+      "Component": "Gradient",
+      "Scratch": "hand-derived backward()",
+      "TensorFlow/Keras": "automatic (GradientTape)",
+      "PyTorch": "automatic (autograd)"
+    },
+    {
+      "Component": "Optimizer",
+      "Scratch": "S.Adam (written out)",
+      "TensorFlow/Keras": "keras.optimizers.Adam",
+      "PyTorch": "torch.optim.Adam"
+    },
+    {
+      "Component": "Training loop",
+      "Scratch": "explicit for-loop",
+      "TensorFlow/Keras": "model.fit()",
+      "PyTorch": "explicit for-loop"
+    },
+    {
+      "Component": "Evaluation",
+      "Scratch": "predict_classes + sklearn",
+      "TensorFlow/Keras": "predict + sklearn",
+      "PyTorch": "forward + sklearn"
+    }
+  ]
+}
