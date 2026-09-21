@@ -1,0 +1,22 @@
+# Trained weights written by these notebooks.
+#
+# Every file under models/ is reproducible by re-running the notebook that
+# created it, and the set runs to hundreds of MB (the Keras .keras archives and
+# the scratch .npz files dominate). The metrics that the report actually quotes
+# live in results/*.json, which IS tracked.
+#
+# The six original notebooks in the repository root take the opposite view and
+# commit their weights under results/models/ - see the note in notebook/README.md.
+# To follow that convention here instead, delete this rule.
+models/
+
+# Decoded-image caches, if anyone points ass4_newdata.CACHE at this folder.
+# The default location is data/cache/, already covered by the root .gitignore.
+cache/
+
+# Scratch space used by the smoke test in README.md
+_smoketmp/
+
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
