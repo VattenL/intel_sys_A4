@@ -1,0 +1,447 @@
+{
+  "meta": {
+    "name": "Rice (5k subset)",
+    "shape": [
+      3,
+      32,
+      32
+    ],
+    "classes": [
+      "Arborio",
+      "Basmati",
+      "Ipsala",
+      "Jasmine",
+      "Karacadag"
+    ],
+    "kind": "image",
+    "channel_mean": [
+      0.11859572999397479,
+      0.11957940564724022,
+      0.12358470801463273
+    ],
+    "channel_std": [
+      0.2824446314417077,
+      0.2848985750649966,
+      0.2937434865709123
+    ],
+    "img_size": 32,
+    "source_resolution": "250x250"
+  },
+  "subset": {
+    "n_train": 5000,
+    "n_test": 2000
+  },
+  "results": [
+    {
+      "framework": "Scratch (NumPy)",
+      "dataset": "Rice (5k subset)",
+      "model": "SmallCNN 2conv+fc",
+      "n_params": 544453,
+      "epochs": 5,
+      "train_seconds": 67.26,
+      "train_loss": 0.0715,
+      "test_accuracy": 0.9445,
+      "precision_macro": 0.9481300763280223,
+      "recall_macro": 0.9450896191391619,
+      "f1_macro": 0.9444130359711151,
+      "history": {
+        "loss": [
+          1.0007715232670307,
+          0.2111517818644643,
+          0.11401651278138161,
+          0.07806220408529044,
+          0.07151605808176101
+        ],
+        "val_acc": [
+          0.899,
+          0.9435,
+          0.959,
+          0.9585,
+          0.9445
+        ],
+        "epoch_seconds": [
+          11.48867109999992,
+          11.707800500000303,
+          10.66352939999706,
+          10.657677399998647,
+          10.909695700000157
+        ]
+      },
+      "confusion": [
+        [
+          374,
+          0,
+          1,
+          1,
+          11
+        ],
+        [
+          0,
+          416,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          390,
+          1,
+          0
+        ],
+        [
+          2,
+          54,
+          11,
+          347,
+          0
+        ],
+        [
+          29,
+          0,
+          0,
+          0,
+          362
+        ]
+      ]
+    },
+    {
+      "framework": "TensorFlow/Keras",
+      "dataset": "Rice (5k subset)",
+      "model": "SmallCNN 2conv+fc",
+      "n_params": 544453,
+      "epochs": 5,
+      "train_seconds": 5.14,
+      "train_loss": 0.0903,
+      "test_accuracy": 0.9545,
+      "precision_macro": 0.9564035249399101,
+      "recall_macro": 0.9542172293212834,
+      "f1_macro": 0.9543734582728189,
+      "history": {
+        "loss": [
+          0.5451837778091431,
+          0.15308113396167755,
+          0.12287657707929611,
+          0.0952010527253151,
+          0.09025837481021881
+        ],
+        "val_acc": [
+          0.8955000042915344,
+          0.9380000233650208,
+          0.9574999809265137,
+          0.9549999833106995,
+          0.9545000195503235
+        ]
+      },
+      "confusion": [
+        [
+          339,
+          0,
+          0,
+          15,
+          33
+        ],
+        [
+          0,
+          402,
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          387,
+          4,
+          0
+        ],
+        [
+          0,
+          18,
+          1,
+          395,
+          0
+        ],
+        [
+          5,
+          0,
+          0,
+          0,
+          386
+        ]
+      ]
+    },
+    {
+      "framework": "PyTorch",
+      "dataset": "Rice (5k subset)",
+      "model": "SmallCNN 2conv+fc",
+      "n_params": 544453,
+      "epochs": 5,
+      "train_seconds": 1.42,
+      "train_loss": 0.0984,
+      "test_accuracy": 0.9475,
+      "precision_macro": 0.9501313775272535,
+      "recall_macro": 0.947654209945551,
+      "f1_macro": 0.9477450214499612,
+      "history": {
+        "loss": [
+          0.6510023914277554,
+          0.24829953573644162,
+          0.24083612896502019,
+          0.1095801773481071,
+          0.09839536159997805
+        ],
+        "val_acc": [
+          0.7765,
+          0.83,
+          0.9465,
+          0.949,
+          0.9475
+        ]
+      },
+      "confusion": [
+        [
+          342,
+          0,
+          0,
+          1,
+          44
+        ],
+        [
+          0,
+          398,
+          0,
+          19,
+          0
+        ],
+        [
+          0,
+          0,
+          389,
+          2,
+          0
+        ],
+        [
+          0,
+          35,
+          0,
+          379,
+          0
+        ],
+        [
+          4,
+          0,
+          0,
+          0,
+          387
+        ]
+      ]
+    },
+    {
+      "framework": "PyTorch",
+      "dataset": "Rice (full)",
+      "model": "SmallCNN 2conv+fc",
+      "n_params": 544453,
+      "epochs": 5,
+      "train_seconds": 17.15,
+      "train_loss": 0.0337,
+      "test_accuracy": 0.9928666666666667,
+      "precision_macro": 0.9928743219900893,
+      "recall_macro": 0.9928666666666667,
+      "f1_macro": 0.9928660462573108,
+      "history": {
+        "loss": [
+          0.16149088717711124,
+          0.0593402736724964,
+          0.04220986313351404,
+          0.034376055881905274,
+          0.033714958619244936
+        ],
+        "val_acc": [
+          0.9727333333333333,
+          0.987,
+          0.9876666666666667,
+          0.9917333333333334,
+          0.9928666666666667
+        ]
+      },
+      "confusion": [
+        [
+          2957,
+          0,
+          0,
+          10,
+          33
+        ],
+        [
+          0,
+          2983,
+          0,
+          17,
+          0
+        ],
+        [
+          2,
+          0,
+          2995,
+          3,
+          0
+        ],
+        [
+          1,
+          23,
+          0,
+          2976,
+          0
+        ],
+        [
+          18,
+          0,
+          0,
+          0,
+          2982
+        ]
+      ]
+    },
+    {
+      "framework": "TensorFlow/Keras",
+      "dataset": "Rice (full)",
+      "model": "SmallCNN 2conv+fc",
+      "n_params": 544453,
+      "epochs": 5,
+      "train_seconds": 57.46,
+      "train_loss": 0.0244,
+      "test_accuracy": 0.9910666666666667,
+      "precision_macro": 0.9910940111030643,
+      "recall_macro": 0.9910666666666668,
+      "f1_macro": 0.9910620795684542,
+      "history": {
+        "loss": [
+          0.13857834041118622,
+          0.043809086084365845,
+          0.03318721055984497,
+          0.030747924000024796,
+          0.02443687804043293
+        ],
+        "val_acc": [
+          0.9787333607673645,
+          0.9811333417892456,
+          0.9842666387557983,
+          0.9895333051681519,
+          0.9910666942596436
+        ]
+      },
+      "confusion": [
+        [
+          2961,
+          0,
+          6,
+          8,
+          25
+        ],
+        [
+          0,
+          2993,
+          0,
+          7,
+          0
+        ],
+        [
+          1,
+          0,
+          2999,
+          0,
+          0
+        ],
+        [
+          3,
+          49,
+          1,
+          2947,
+          0
+        ],
+        [
+          34,
+          0,
+          0,
+          0,
+          2966
+        ]
+      ]
+    }
+  ],
+  "component_table": [
+    {
+      "Component": "Data loading",
+      "Scratch": "ass4_newdata -> NumPy arrays",
+      "TensorFlow/Keras": "same arrays (transposed to NHWC)",
+      "PyTorch": "same arrays"
+    },
+    {
+      "Component": "Preprocessing",
+      "Scratch": "ass4_newdata (shared)",
+      "TensorFlow/Keras": "shared",
+      "PyTorch": "shared"
+    },
+    {
+      "Component": "Tensor layout",
+      "Scratch": "N,C,H,W",
+      "TensorFlow/Keras": "N,H,W,C (channels-last)",
+      "PyTorch": "N,C,H,W"
+    },
+    {
+      "Component": "Model definition",
+      "Scratch": "S.Sequential([...])",
+      "TensorFlow/Keras": "keras.Sequential([...])",
+      "PyTorch": "nn.Module"
+    },
+    {
+      "Component": "Convolution",
+      "Scratch": "S.Conv2D (im2col by hand)",
+      "TensorFlow/Keras": "keras.layers.Conv2D",
+      "PyTorch": "nn.Conv2d"
+    },
+    {
+      "Component": "Pooling",
+      "Scratch": "S.MaxPool2D (argmax routing)",
+      "TensorFlow/Keras": "keras.layers.MaxPooling2D",
+      "PyTorch": "nn.MaxPool2d"
+    },
+    {
+      "Component": "Activation",
+      "Scratch": "S.ReLU (mask multiply)",
+      "TensorFlow/Keras": "activation='relu'",
+      "PyTorch": "nn.ReLU"
+    },
+    {
+      "Component": "Flatten",
+      "Scratch": "S.Flatten",
+      "TensorFlow/Keras": "keras.layers.Flatten",
+      "PyTorch": "nn.Flatten"
+    },
+    {
+      "Component": "Loss",
+      "Scratch": "S.SoftmaxCrossEntropy",
+      "TensorFlow/Keras": "SparseCategoricalCrossentropy",
+      "PyTorch": "nn.CrossEntropyLoss"
+    },
+    {
+      "Component": "Gradient",
+      "Scratch": "hand-derived backward()",
+      "TensorFlow/Keras": "automatic (GradientTape)",
+      "PyTorch": "automatic (autograd)"
+    },
+    {
+      "Component": "Optimizer",
+      "Scratch": "S.Adam (written out)",
+      "TensorFlow/Keras": "keras.optimizers.Adam",
+      "PyTorch": "torch.optim.Adam"
+    },
+    {
+      "Component": "Training loop",
+      "Scratch": "explicit for-loop",
+      "TensorFlow/Keras": "model.fit()",
+      "PyTorch": "explicit for-loop"
+    }
+  ]
+}

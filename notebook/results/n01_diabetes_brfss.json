@@ -1,0 +1,350 @@
+{
+  "meta": {
+    "name": "BRFSS diabetes 2015+2023",
+    "raw_shape": [
+      546166,
+      20
+    ],
+    "n_features": 19,
+    "classes": [
+      "no diabetes",
+      "prediabetes",
+      "diabetes"
+    ],
+    "numeric_features": [
+      "BMI",
+      "GenHlth",
+      "MentHlth",
+      "PhysHlth",
+      "Age",
+      "Education",
+      "Income"
+    ],
+    "kind": "tabular",
+    "split": "random 80%/20%, seed 42"
+  },
+  "results": [
+    {
+      "framework": "Scratch (NumPy)",
+      "dataset": "BRFSS diabetes 2015+2023",
+      "model": "MLP 19-128-64-3",
+      "n_params": 11011,
+      "epochs": 15,
+      "train_seconds": 27.46,
+      "train_loss": 0.4134,
+      "test_accuracy": 0.8403412888046653,
+      "precision_macro": 0.4672995419131743,
+      "recall_macro": 0.3837670775890622,
+      "f1_macro": 0.39193055138894867,
+      "history": {
+        "loss": [
+          0.4457103190676259,
+          0.4210239084896876,
+          0.4185928284388644,
+          0.41726678780945126,
+          0.4165246165245684,
+          0.4159010416524202,
+          0.41539103484111844,
+          0.4151759750674046,
+          0.4146368364074039,
+          0.41456774046495076,
+          0.41426588761645866,
+          0.41409643786164424,
+          0.41378580165593754,
+          0.4137878582606067,
+          0.4134233984670656
+        ],
+        "val_acc": [
+          0.839132862779563,
+          0.8392427196909359,
+          0.8399018611591735,
+          0.8407715617075426,
+          0.840359598289894,
+          0.8397828495051861,
+          0.8405610026274112,
+          0.8405243836569535,
+          0.8403687530325085,
+          0.840625085825712,
+          0.8387666730749865,
+          0.8410187397581317,
+          0.840469455201267,
+          0.8407440974796994,
+          0.8403412888046653
+        ],
+        "epoch_seconds": [
+          1.7264976000005845,
+          1.6092081000006146,
+          1.5492670000003272,
+          1.6936151000008977,
+          1.7597492999993847,
+          1.8196052000002965,
+          1.5459970000010799,
+          1.7174747999997635,
+          1.9935430999994423,
+          1.7237799999984418,
+          1.599414299998898,
+          1.6283824999991339,
+          2.3612359999988257,
+          1.7765548000006675,
+          1.6691717000012432
+        ]
+      },
+      "confusion": [
+        [
+          89048,
+          0,
+          2065
+        ],
+        [
+          2137,
+          0,
+          204
+        ],
+        [
+          13034,
+          0,
+          2745
+        ]
+      ]
+    },
+    {
+      "framework": "TensorFlow/Keras",
+      "dataset": "BRFSS diabetes 2015+2023",
+      "model": "MLP 19-128-64-3",
+      "n_params": 11011,
+      "epochs": 15,
+      "train_seconds": 41.92,
+      "train_loss": 0.4133,
+      "test_accuracy": 0.8402497413785212,
+      "precision_macro": 0.47027840779787483,
+      "recall_macro": 0.37676129429669053,
+      "f1_macro": 0.3822774625116367,
+      "history": {
+        "loss": [
+          0.42481303215026855,
+          0.4175620973110199,
+          0.4164034426212311,
+          0.4155126214027405,
+          0.4149938225746155,
+          0.4146825075149536,
+          0.4144637882709503,
+          0.41425082087516785,
+          0.4140703082084656,
+          0.41390013694763184,
+          0.41385820508003235,
+          0.41367805004119873,
+          0.41356945037841797,
+          0.41334715485572815,
+          0.413338840007782
+        ],
+        "val_acc": [
+          0.8401398658752441,
+          0.8398560881614685,
+          0.8400940895080566,
+          0.8406159281730652,
+          0.8408448100090027,
+          0.8407715559005737,
+          0.8406342267990112,
+          0.8405335545539856,
+          0.8406434059143066,
+          0.8408356308937073,
+          0.8405518531799316,
+          0.8405152559280396,
+          0.8406891822814941,
+          0.8404877781867981,
+          0.8402497172355652
+        ]
+      },
+      "confusion": [
+        [
+          89437,
+          0,
+          1676
+        ],
+        [
+          2169,
+          0,
+          172
+        ],
+        [
+          13433,
+          0,
+          2346
+        ]
+      ]
+    },
+    {
+      "framework": "PyTorch",
+      "dataset": "BRFSS diabetes 2015+2023",
+      "model": "MLP 19-128-64-3",
+      "n_params": 11011,
+      "epochs": 15,
+      "train_seconds": 74.68,
+      "train_loss": 0.4133,
+      "test_accuracy": 0.8405610026274112,
+      "precision_macro": 0.4685999017151328,
+      "recall_macro": 0.3814444811016229,
+      "f1_macro": 0.3887975272084989,
+      "history": {
+        "loss": [
+          0.4265585475381383,
+          0.4176559112333176,
+          0.4163475583608065,
+          0.41579295700938645,
+          0.4153233467135851,
+          0.4149881611110596,
+          0.414827571602404,
+          0.41438447025413044,
+          0.41443002670916046,
+          0.4139199876687509,
+          0.4139341144933293,
+          0.4136097939236512,
+          0.41372909412163356,
+          0.4133709157393142,
+          0.4133474668984394
+        ],
+        "val_acc": [
+          0.8398835516739447,
+          0.839911015901788,
+          0.8402772056063644,
+          0.8402222771506779,
+          0.8402222771506779,
+          0.8403870625177373,
+          0.8401948129228347,
+          0.8403321340620509,
+          0.839755385277343,
+          0.8402222771506779,
+          0.8399750991000888,
+          0.8402588961211356,
+          0.8406800142813985,
+          0.840469455201267,
+          0.8405610026274112
+        ]
+      },
+      "confusion": [
+        [
+          89210,
+          0,
+          1903
+        ],
+        [
+          2130,
+          0,
+          211
+        ],
+        [
+          13172,
+          0,
+          2607
+        ]
+      ]
+    }
+  ],
+  "component_table": [
+    {
+      "Component": "Data loading",
+      "Scratch": "ass4_newdata -> NumPy arrays",
+      "TensorFlow/Keras": "same arrays",
+      "PyTorch": "same arrays"
+    },
+    {
+      "Component": "Preprocessing",
+      "Scratch": "ass4_newdata (shared)",
+      "TensorFlow/Keras": "shared",
+      "PyTorch": "shared"
+    },
+    {
+      "Component": "Model definition",
+      "Scratch": "S.Sequential([...])",
+      "TensorFlow/Keras": "keras.Sequential([...])",
+      "PyTorch": "nn.Module + nn.Sequential"
+    },
+    {
+      "Component": "Dense layer",
+      "Scratch": "S.Dense (x@W+b by hand)",
+      "TensorFlow/Keras": "keras.layers.Dense",
+      "PyTorch": "nn.Linear"
+    },
+    {
+      "Component": "Activation",
+      "Scratch": "S.ReLU (mask multiply)",
+      "TensorFlow/Keras": "activation='relu'",
+      "PyTorch": "nn.ReLU"
+    },
+    {
+      "Component": "Regularisation",
+      "Scratch": "S.Dropout (inverted)",
+      "TensorFlow/Keras": "keras.layers.Dropout",
+      "PyTorch": "nn.Dropout"
+    },
+    {
+      "Component": "Loss",
+      "Scratch": "S.SoftmaxCrossEntropy",
+      "TensorFlow/Keras": "SparseCategoricalCrossentropy",
+      "PyTorch": "nn.CrossEntropyLoss"
+    },
+    {
+      "Component": "Class weighting",
+      "Scratch": "not supported",
+      "TensorFlow/Keras": "fit(class_weight=...)",
+      "PyTorch": "CrossEntropyLoss(weight=...)"
+    },
+    {
+      "Component": "Gradient",
+      "Scratch": "hand-derived backward()",
+      "TensorFlow/Keras": "automatic (GradientTape)",
+      "PyTorch": "automatic (autograd)"
+    },
+    {
+      "Component": "Optimizer",
+      "Scratch": "S.Adam (written out)",
+      "TensorFlow/Keras": "keras.optimizers.Adam",
+      "PyTorch": "torch.optim.Adam"
+    },
+    {
+      "Component": "Training loop",
+      "Scratch": "explicit for-loop",
+      "TensorFlow/Keras": "model.fit()",
+      "PyTorch": "explicit for-loop"
+    },
+    {
+      "Component": "Evaluation",
+      "Scratch": "predict_classes + sklearn",
+      "TensorFlow/Keras": "predict + sklearn",
+      "PyTorch": "forward + sklearn"
+    }
+  ],
+  "baseline": {
+    "strategy": "always predict 'no diabetes'",
+    "test_accuracy": 0.8341160638268655,
+    "precision_macro": 0.27803868794228853,
+    "recall_macro": 0.3333333333333333,
+    "f1_macro": 0.30318548910385035
+  },
+  "class_weighting": [
+    {
+      "framework": "TensorFlow/Keras",
+      "class_weighted": "no",
+      "test_accuracy": 0.8402,
+      "f1_macro": 0.3823
+    },
+    {
+      "framework": "TensorFlow/Keras",
+      "class_weighted": "yes",
+      "test_accuracy": 0.5922,
+      "f1_macro": 0.413
+    },
+    {
+      "framework": "PyTorch",
+      "class_weighted": "no",
+      "test_accuracy": 0.8406,
+      "f1_macro": 0.3888
+    },
+    {
+      "framework": "PyTorch",
+      "class_weighted": "yes",
+      "test_accuracy": 0.655,
+      "f1_macro": 0.4306
+    }
+  ]
+}
