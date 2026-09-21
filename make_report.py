@@ -14,6 +14,7 @@ import subprocess
 import sys
 
 from cover import COVER_CSS, cover_html
+from make_docs_pdf import footer
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 RESULTS = os.path.join(HERE, "results")
@@ -26,6 +27,13 @@ NOTEBOOKS = [
     ("06_mnist_lenet", "MNIST (image, LeNet-5)"),
     ("07_cifar10_lenet", "CIFAR-10 (image, LeNet-5)"),
 ]
+
+# Running footer per notebook, matching the LaTeX-built documents' running head so the
+# whole pdf/ folder reads as one set.
+FOOTERS = {
+    "02_mnist": "MNIST",
+    "07_cifar10_lenet": "CIFAR-10 với LeNet-5",
+}
 
 # Notebooks whose PDF is produced by report/build_latex.py instead. They are still
 # listed above because build_readme() needs the full inventory; export_pdfs() skips
@@ -104,10 +112,37 @@ Three commands, each owning a different part of `pdf/`:
 | `python make_report.py` | `README.md`, `02_mnist`, `07_cifar10_lenet` | nbconvert -> HTML -> Chromium print |
 | `python make_docs_pdf.py` | `08`, `09` | Markdown -> HTML -> Chromium print |
 
-The LaTeX route needs `pypandoc-binary` (`pip install pypandoc-binary`) and MiKTeX's
-`xelatex`; the fonts are Cambria, Segoe UI and Consolas, which ship with Windows.
+The reports are written in **Vietnamese**: the prose cells, the covers and the running
+heads. Code, cell output and the module docstrings stay in English, because the stored
+output was produced by that code and the two have to agree.
+
+The LaTeX route needs `pypandoc-binary` (`pip install pypandoc-binary`) plus a XeTeX
+engine. It takes MiKTeX's `xelatex` on the Windows machine, otherwise the first of
+`xelatex` or `tectonic` on `PATH`; `ASS4_TEX` overrides the choice. Fonts follow the
+platform — Cambria / Segoe UI / Consolas on Windows, Times New Roman / Arial / Menlo on
+macOS — and `ASS4_MAIN_FONT`, `ASS4_SANS_FONT`, `ASS4_MONO_FONT` override those. All of
+them carry the Vietnamese Extended block; the monospace one also has to carry the
+box-drawing characters the Keras summaries print.
 `python report/build_latex.py 04 --keep` builds one document and leaves the
 intermediate `.tex` and `.log` under `report/build/` for inspection.
+
+## Demo
+
+`demo.py` reloads the saved networks and has them classify the same images, with no
+retraining:
+
+```bash
+python demo.py --list                      # every saved model, with the score it holds
+python demo.py                             # LeNet-5 on MNIST, 8 test images
+python demo.py --notebook 03_cifar10 --eval # CIFAR-10, plus a full test-set score
+```
+
+Each leg comes back a different way — `.keras` rebuilds itself, `.pt` and `.npz` need the
+architecture first — so `demo.py` keeps the architecture definitions of notebooks 02, 03,
+06 and 07 and checks the parameter count against each sidecar before predicting. It prints
+a per-image table, says how often the implementations agree, and writes
+`results/demo_<notebook>.png`. A framework that is not installed is skipped rather than
+fatal.
 
 ## Environment
 
@@ -434,8 +469,11 @@ def export_pdfs(names):
                         path=os.path.join(pdf_dir, f"{name}.pdf"),
                         format="A4",
                         print_background=True,
-                        margin={"top": "14mm", "bottom": "14mm",
+                        margin={"top": "14mm", "bottom": "16mm",
                                 "left": "10mm", "right": "10mm"},
+                        display_header_footer=True,
+                        header_template="<div></div>",
+                        footer_template=footer(FOOTERS.get(name, name)),
                     )
                     page.close()
                     ok.append(name)

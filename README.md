@@ -32,10 +32,37 @@ Three commands, each owning a different part of `pdf/`:
 | `python make_report.py` | `README.md`, `02_mnist`, `07_cifar10_lenet` | nbconvert -> HTML -> Chromium print |
 | `python make_docs_pdf.py` | `08`, `09` | Markdown -> HTML -> Chromium print |
 
-The LaTeX route needs `pypandoc-binary` (`pip install pypandoc-binary`) and MiKTeX's
-`xelatex`; the fonts are Cambria, Segoe UI and Consolas, which ship with Windows.
+The reports are written in **Vietnamese**: the prose cells, the covers and the running
+heads. Code, cell output and the module docstrings stay in English, because the stored
+output was produced by that code and the two have to agree.
+
+The LaTeX route needs `pypandoc-binary` (`pip install pypandoc-binary`) plus a XeTeX
+engine. It takes MiKTeX's `xelatex` on the Windows machine, otherwise the first of
+`xelatex` or `tectonic` on `PATH`; `ASS4_TEX` overrides the choice. Fonts follow the
+platform — Cambria / Segoe UI / Consolas on Windows, Times New Roman / Arial / Menlo on
+macOS — and `ASS4_MAIN_FONT`, `ASS4_SANS_FONT`, `ASS4_MONO_FONT` override those. All of
+them carry the Vietnamese Extended block; the monospace one also has to carry the
+box-drawing characters the Keras summaries print.
 `python report/build_latex.py 04 --keep` builds one document and leaves the
 intermediate `.tex` and `.log` under `report/build/` for inspection.
+
+## Demo
+
+`demo.py` reloads the saved networks and has them classify the same images, with no
+retraining:
+
+```bash
+python demo.py --list                      # every saved model, with the score it holds
+python demo.py                             # LeNet-5 on MNIST, 8 test images
+python demo.py --notebook 03_cifar10 --eval # CIFAR-10, plus a full test-set score
+```
+
+Each leg comes back a different way — `.keras` rebuilds itself, `.pt` and `.npz` need the
+architecture first — so `demo.py` keeps the architecture definitions of notebooks 02, 03,
+06 and 07 and checks the parameter count against each sidecar before predicting. It prints
+a per-image table, says how often the implementations agree, and writes
+`results/demo_<notebook>.png`. A framework that is not installed is skipped rather than
+fatal.
 
 ## Environment
 

@@ -198,6 +198,15 @@
   {\end{list}}
 
 % ---------------------------------------------------------------------------------
+% ---------------------------------------------------------------------------------
+% Tên các phần do LaTeX tự sinh. Báo cáo viết bằng tiếng Việt, nên "Contents" trên
+% trang mục lục phải đổi theo. Đổi bằng \renewcommand chứ không nạp babel/polyglossia:
+% tài liệu chỉ cần ba chuỗi này, còn babel lại đụng vào cách ngắt dòng và dấu nháy.
+% ---------------------------------------------------------------------------------
+\renewcommand{\contentsname}{Mục lục}
+\renewcommand{\figurename}{Hình}
+\renewcommand{\tablename}{Bảng}
+
 % Page furniture. \runninghead is set per document by build_latex.py.
 % ---------------------------------------------------------------------------------
 \providecommand{\runninghead}{}

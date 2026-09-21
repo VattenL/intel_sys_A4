@@ -21,15 +21,16 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 PDF_DIR = os.path.join(HERE, "pdf")
 HTML_DIR = os.path.join(HERE, "_html")
 
-# (markdown source, output basename, footer caption). Footer text is ASCII-only:
-# Chromium renders the header/footer templates with its own font stack, which has
-# no Vietnamese coverage, so accented characters come out as tofu there.
+# (markdown source, output basename, footer caption). The caption is printed in the
+# Chromium footer template, which is rendered outside the page and therefore does not
+# inherit the document CSS - it needs its own font stack, set in footer() below, or the
+# Vietnamese diacritics come out as tofu.
 # theory_notes.md is absent on purpose: pdf/05_deep_learning_cnn.pdf comes from
 # report/build_latex.py now. Listing it here too would have the two pipelines
 # overwrite each other's output depending on which ran last.
 DOCS = [
-    ("lenet_mnist_report.md",   "08_lenet_mnist_report",    "LeNet-5 tren MNIST"),
-    ("lenet_cifar10_report.md", "09_lenet_cifar10_report",  "LeNet-5 tren CIFAR-10"),
+    ("lenet_mnist_report.md",   "08_lenet_mnist_report",    "LeNet-5 trên MNIST"),
+    ("lenet_cifar10_report.md", "09_lenet_cifar10_report",  "LeNet-5 trên CIFAR-10"),
 ]
 
 # Font choice is not cosmetic here: Charter/Georgia lack the Vietnamese Extended
@@ -143,10 +144,17 @@ def build_html(src: str, name: str) -> str:
 
 
 def footer(caption: str) -> str:
+    """Running footer: document caption left, page x/y right.
+
+    The font stack is spelled out because the footer template is rendered in its own
+    document, with none of the page CSS: left to Chromium's default it falls back per
+    glyph and splits the Vietnamese diacritics off their letters.
+    """
+    font = "'Segoe UI', Tahoma, Arial, 'Helvetica Neue', sans-serif"
     return (
         "<div style='width:100%;font-size:8px;color:#888;"
-        "padding:0 14mm;font-family:sans-serif;'>"
-        f"<span style='float:left'>Assignment 4 &mdash; {caption}</span>"
+        f"padding:0 14mm;font-family:{font};'>"
+        f"<span style='float:left'>Bài tập 4 &mdash; {caption}</span>"
         "<span style='float:right'>"
         "<span class='pageNumber'></span>/<span class='totalPages'></span>"
         "</span></div>"

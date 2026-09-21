@@ -8,57 +8,70 @@ the identity fields live in exactly one place.
 from __future__ import annotations
 
 # Fill these once; every cover page reads from here.
-SUBJECT = "Intelligent Systems Development"
-ASSIGNMENT = "Assignment 4 — Comparing CNN Implementations"
-STUDENT = "TODO — full name"
-STUDENT_ID = "TODO — student ID"
-CLASS_NAME = "TODO — class"
-INSTRUCTOR = "TODO — instructor"
-INSTITUTION = "TODO — university / faculty"
-DATE = "September 2026"
+SUBJECT = "Phát triển Hệ thống Thông minh (Intelligent Systems Development)"
+ASSIGNMENT = "Bài tập 4 — So sánh ba cách cài đặt CNN"
+STUDENT = "Trần Xuân Thành"
+STUDENT_ID = "B23DCAT280"
+CLASS_NAME = "E23CNPM01 — Nhóm 02"
+INSTRUCTOR = "PGS.TS. Trần Đình Quế"
+INSTITUTION = "Học viện Công nghệ Bưu chính Viễn thông — Khoa Công nghệ Thông tin"
+DATE = "Tháng 9 năm 2026"
+
+# Nhãn trên trang bìa. build_latex.py đọc lại chính bộ nhãn này, nên bản LaTeX và
+# bản Chromium không thể lệch chữ nhau.
+LABELS = {
+    "report": "Báo cáo",
+    "student": "Sinh viên",
+    "student_id": "Mã sinh viên",
+    "class": "Lớp",
+    "instructor": "Giảng viên",
+}
 
 # Per-document title and one-line summary shown on the cover. A document absent
-# from this map gets no cover page - that is how 02_mnist stays as it was.
+# from this map gets no cover page; every document that ships now has an entry.
 TITLES = {
     "01_diabetes130": (
         "Diabetes 130-US hospitals",
-        "Readmission MLP built three ways — NumPy from scratch, "
-        "TensorFlow/Keras, and PyTorch",
+        "Mạng MLP dự đoán tái nhập viện, cài đặt ba cách — NumPy thuần, "
+        "TensorFlow/Keras và PyTorch",
+    ),
+    "02_mnist": (
+        "MNIST",
+        "Mạng CNN trên ảnh chữ số viết tay — ba cách cài đặt, cùng một phép "
+        "chia dữ liệu và một bộ siêu tham số",
     ),
     "03_cifar10": (
         "CIFAR-10",
-        "CNN over 32×32 colour images — three frameworks, one split, "
-        "one set of hyperparameters",
+        "Mạng CNN trên ảnh màu 32×32 — ba framework, một phép chia dữ liệu, "
+        "một bộ siêu tham số",
     ),
     "04_compare": (
-        "Comparison and Improved Models",
-        "Cross-dataset comparison of the three implementations, and the "
-        "M1–M4 architecture-evolution experiment",
+        "So sánh và cải tiến mô hình",
+        "So sánh ba cách cài đặt trên cả ba bộ dữ liệu, và thí nghiệm tiến hoá "
+        "kiến trúc M1–M4",
     ),
     "05_deep_learning_cnn": (
-        "Deep Learning and CNNs",
-        "Function composition, backpropagation, and the structure of "
-        "convolutional networks",
+        "Deep Learning và CNN",
+        "Hợp thành hàm số, lan truyền ngược, và cấu trúc của mạng tích chập",
     ),
     "06_mnist_lenet": (
-        "MNIST with LeNet-5",
-        "LeCun et al. (1998) in three frameworks — run alongside "
-        "notebook 02 rather than replacing it",
+        "MNIST với LeNet-5",
+        "LeCun và cộng sự (1998) trên ba framework — chạy song song chứ không "
+        "thay thế notebook 02",
     ),
     "07_cifar10_lenet": (
-        "CIFAR-10 with LeNet-5",
-        "The same LeNet-5 applied to colour photographs — three "
-        "frameworks, notebook 03 left untouched",
+        "CIFAR-10 với LeNet-5",
+        "Vẫn kiến trúc LeNet-5 ấy, nay áp lên ảnh màu — ba framework, "
+        "notebook 03 giữ nguyên",
     ),
     "08_lenet_mnist_report": (
-        "LeNet-5 on MNIST — Report",
-        "Full analysis of the results, parameter budget, and the limits of "
-        "the architecture",
+        "LeNet-5 trên MNIST — Báo cáo",
+        "Phân tích đầy đủ kết quả, ngân sách tham số, và giới hạn của kiến trúc",
     ),
     "09_lenet_cifar10_report": (
-        "LeNet-5 on CIFAR-10 — Report",
-        "Why one architecture produces opposite outcomes on two datasets of "
-        "the same spatial size",
+        "LeNet-5 trên CIFAR-10 — Báo cáo",
+        "Vì sao cùng một kiến trúc cho hai kết quả trái ngược trên hai bộ ảnh "
+        "cùng kích thước",
     ),
 }
 
@@ -147,11 +160,12 @@ def cover_html(name: str) -> str:
     if name not in TITLES:
         return ""
     title, subtitle = TITLES[name]
+    kicker = LABELS["report"]
     meta = "".join([
-        _row("Student", STUDENT),
-        _row("Student ID", STUDENT_ID),
-        _row("Class", CLASS_NAME),
-        _row("Instructor", INSTRUCTOR),
+        _row(LABELS["student"], STUDENT),
+        _row(LABELS["student_id"], STUDENT_ID),
+        _row(LABELS["class"], CLASS_NAME),
+        _row(LABELS["instructor"], INSTRUCTOR),
     ])
     return f"""<section class="a4-cover">
   <div class="ac-top">
@@ -159,7 +173,7 @@ def cover_html(name: str) -> str:
     <div class="ac-subject">{SUBJECT}</div>
   </div>
   <div class="ac-mid">
-    <div class="ac-kicker">Report</div>
+    <div class="ac-kicker">{kicker}</div>
     <h1 class="ac-title">{title}</h1>
     <p class="ac-sub">{subtitle}</p>
     <div class="ac-assign">{ASSIGNMENT}</div>

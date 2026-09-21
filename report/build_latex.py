@@ -49,23 +49,49 @@ PREAMBLE = HERE / "preamble.tex"
 sys.path.insert(0, str(ROOT))
 import cover  # noqa: E402  -- needs ROOT on the path first
 
-XELATEX = Path(r"D:/LaTeX/miktex/bin/x64/xelatex.exe")
+# The TeX engine. MiKTeX's xelatex on the Windows machine the documents were written
+# on; otherwise whatever is on PATH -- xelatex, or tectonic, which is the same XeTeX
+# engine with its own package downloader. ASS4_TEX overrides both.
+def _find_engine() -> Path | None:
+    override = os.environ.get("ASS4_TEX")
+    if override:
+        return Path(override)
+    miktex = Path(r"D:/LaTeX/miktex/bin/x64/xelatex.exe")
+    if miktex.exists():
+        return miktex
+    for exe in ("xelatex", "tectonic"):
+        found = shutil.which(exe)
+        if found:
+            return Path(found)
+    return None
 
-# Cambria carries Vietnamese and the light box-drawing characters; Consolas carries the
-# heavy ones the Keras summary tables use. Segoe UI is the heading face. All three ship
-# with Windows, so there is nothing to install. See the coverage note in preamble.tex.
-MAIN_FONT = "Cambria"
-SANS_FONT = "Segoe UI"
-MONO_FONT = "Consolas"
+
+ENGINE = _find_engine()
+
+# Fonts are picked for coverage, not looks: the prose is Vietnamese (needs the
+# Vietnamese Extended block, U+1EA0-U+1EF9) and the executed cells print box-drawing
+# characters. Windows: Cambria + Segoe UI + Consolas, all three present by default.
+# macOS: Times New Roman + Arial + Menlo, the same three properties -- Menlo is the
+# only one of the mac monospaces carrying the heavy box-drawing set the Keras summary
+# tables use. Override any of them with ASS4_MAIN_FONT / ASS4_SANS_FONT /
+# ASS4_MONO_FONT when building somewhere else.
+_FONTS = {
+    "win32":  ("Cambria", "Segoe UI", "Consolas"),
+    "darwin": ("Times New Roman", "Arial", "Menlo"),
+}
+_default_fonts = _FONTS.get(sys.platform, ("DejaVu Serif", "DejaVu Sans", "DejaVu Sans Mono"))
+MAIN_FONT = os.environ.get("ASS4_MAIN_FONT", _default_fonts[0])
+SANS_FONT = os.environ.get("ASS4_SANS_FONT", _default_fonts[1])
+MONO_FONT = os.environ.get("ASS4_MONO_FONT", _default_fonts[2])
 
 # name -> (source file, running head). The head is printed on every page; it is set in
 # Cambria, so Vietnamese diacritics are fine there.
 DOCS: dict[str, tuple[str, str]] = {
-    "01_diabetes130":       ("01_diabetes130.ipynb", "Assignment 4 — Diabetes 130-US hospitals"),
-    "03_cifar10":           ("03_cifar10.ipynb",     "Assignment 4 — CIFAR-10"),
-    "04_compare":           ("04_compare.ipynb",     "Assignment 4 — So sánh và cải tiến mô hình"),
-    "05_deep_learning_cnn": ("theory_notes.md",      "Assignment 4 — Deep Learning và CNN"),
-    "06_mnist_lenet":       ("06_mnist_lenet.ipynb", "Assignment 4 — MNIST với LeNet-5"),
+    "01_diabetes130":       ("01_diabetes130.ipynb", "Bài tập 4 — Diabetes 130-US hospitals"),
+    "03_cifar10":           ("03_cifar10.ipynb",     "Bài tập 4 — CIFAR-10"),
+    "04_compare":           ("04_compare.ipynb",     "Bài tập 4 — So sánh và cải tiến mô hình"),
+    "05_deep_learning_cnn": ("theory_notes.md",      "Bài tập 4 — Deep Learning và CNN"),
+    "06_mnist_lenet":       ("06_mnist_lenet.ipynb", "Bài tập 4 — MNIST với LeNet-5"),
 }
 
 CODE_FENCE = re.compile(r"^(```|~~~)")
@@ -349,8 +375,10 @@ def title_page(name: str) -> str:
     title, subtitle = cover.TITLES.get(name, (name, ""))
     filled = lambda v: not v.strip().startswith("TODO")
     rows = [(k, v) for k, v in (
-        ("Student", cover.STUDENT), ("Student ID", cover.STUDENT_ID),
-        ("Class", cover.CLASS_NAME), ("Instructor", cover.INSTRUCTOR),
+        (cover.LABELS["student"], cover.STUDENT),
+        (cover.LABELS["student_id"], cover.STUDENT_ID),
+        (cover.LABELS["class"], cover.CLASS_NAME),
+        (cover.LABELS["instructor"], cover.INSTRUCTOR),
     ) if filled(v)]
 
     institution = (rf"{{\large\scshape\color{{accent}}{tex_escape(cover.INSTITUTION)}\par}}"
@@ -363,6 +391,8 @@ def title_page(name: str) -> str:
         meta = ("\\vspace{1.4cm}\n"
                 "\\begin{tabular}{@{}ll@{}}\n" + body + "\n\\end{tabular}\n")
 
+    report_kicker = tex_escape(cover.LABELS["report"])
+
     return rf"""
 \begin{{titlepage}}
 \centering
@@ -373,7 +403,7 @@ def title_page(name: str) -> str:
 {{\normalsize\color{{captiontext}}{tex_escape(cover.SUBJECT)}\par}}
 
 \vspace{{2.2cm}}
-{{\footnotesize\color{{accentmid}}\MakeUppercase{{Report}}\par}}
+{{\footnotesize\color{{accentmid}}\MakeUppercase{{{report_kicker}}}\par}}
 \vspace{{0.5cm}}
 {{\color{{accent}}\rule{{\linewidth}}{{2.2pt}}}}
 \vspace{{0.8cm}}
@@ -466,17 +496,27 @@ def run_xelatex(tex: Path) -> list[str]:
 
     nonstopmode rather than halt-on-error: a missing glyph or an overfull box should
     not cost the whole document. Genuine ``!`` errors are collected and reported.
+    tectonic takes neither flag -- it runs to a fixed point on its own and reports
+    errors the same way in its output.
     """
+    tectonic = ENGINE.name.startswith("tectonic")
+    if tectonic:
+        cmd = [str(ENGINE), "-X", "compile", "--keep-logs", "--outdir",
+               str(tex.parent), tex.name]
+        passes = 1
+    else:
+        cmd = [str(ENGINE), "-interaction=nonstopmode", "--enable-installer",
+               f"-output-directory={tex.parent}", tex.name]
+        passes = 2
+
     errors: list[str] = []
-    for _ in range(2):
+    for _ in range(passes):
         proc = subprocess.run(
-            [str(XELATEX), "-interaction=nonstopmode", "--enable-installer",
-             f"-output-directory={tex.parent}", tex.name],
-            cwd=tex.parent, capture_output=True, text=True,
+            cmd, cwd=tex.parent, capture_output=True, text=True,
             encoding="utf-8", errors="replace",
         )
-        errors = [ln.strip() for ln in (proc.stdout or "").splitlines()
-                  if _TEX_ERROR.match(ln)]
+        out = (proc.stdout or "") + ("\n" + proc.stderr if tectonic and proc.stderr else "")
+        errors = [ln.strip() for ln in out.splitlines() if _TEX_ERROR.match(ln)]
     return errors
 
 
@@ -503,7 +543,7 @@ def build(name: str, tex_only: bool) -> bool:
         print(f"      wrote {tex.relative_to(ROOT)}")
         return True
 
-    print(f"      xelatex x2 ...", flush=True)
+    print(f"      {ENGINE.stem} ...", flush=True)
     errors = run_xelatex(tex)
 
     produced = work / f"{name}.pdf"
@@ -543,11 +583,13 @@ def main() -> int:
         print(f"no document matches {args}; known: {', '.join(DOCS)}")
         return 1
 
-    if not XELATEX.exists():
-        print(f"xelatex not found at {XELATEX}")
+    if ENGINE is None or not ENGINE.exists():
+        print("no TeX engine found -- install MiKTeX/TeX Live (xelatex) or tectonic, "
+              "or point ASS4_TEX at one")
         return 1
 
-    print(f"Assignment 4 — LaTeX build ({len(names)} document(s))")
+    print(f"Assignment 4 — LaTeX build ({len(names)} document(s)), "
+          f"engine {ENGINE.stem}, fonts {MAIN_FONT} / {SANS_FONT} / {MONO_FONT}")
     ok = [build(n, tex_only) for n in names]
 
     if not keep and not tex_only:
