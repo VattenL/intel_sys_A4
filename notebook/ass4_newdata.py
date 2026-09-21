@@ -1,4 +1,4 @@
-"""Loaders for the three datasets that ship inside `data/`.
+"""Loaders for the datasets that ship inside `data/`.
 
 `ass4_utils.py` in the repository root already covers the original three
 datasets (Diabetes 130-US, MNIST, CIFAR-10) and owns everything that is *not*
@@ -44,12 +44,8 @@ SEED = 42
 # --------------------------------------------------------------------------
 DIABETES_CSV = os.path.join(DATA, "diabetes_brfss_2015_2023.csv")
 RICE_DIR = os.path.join(DATA, "Rice_Image_Dataset")
-INTEL_TRAIN_DIR = os.path.join(DATA, "seg_train")
-INTEL_TEST_DIR = os.path.join(DATA, "seg_test")
-INTEL_PRED_DIR = os.path.join(DATA, "seg_pred")
 
 RICE_CLASSES = ["Arborio", "Basmati", "Ipsala", "Jasmine", "Karacadag"]
-INTEL_CLASSES = ["buildings", "forest", "glacier", "mountain", "sea", "street"]
 
 # BRFSS `Diabetes_012`, in the order the codebook defines
 BRFSS_CLASSES = ["no diabetes", "prediabetes", "diabetes"]
@@ -137,36 +133,6 @@ def inventory(verbose: bool = True) -> pd.DataFrame:
                 "usable_for_training": n > 0,
             }
         )
-
-    for label, base in [("seg_train", INTEL_TRAIN_DIR), ("seg_test", INTEL_TEST_DIR)]:
-        # Kaggle ships this dataset double-nested: seg_train/seg_train/<class>/
-        inner = os.path.join(base, label)
-        root = inner if os.path.isdir(inner) else base
-        n = sum(_count_images(os.path.join(root, c)) for c in INTEL_CLASSES)
-        rows.append(
-            {
-                "dataset": "Intel scenes",
-                "part": label,
-                "present": n > 0,
-                "items": n,
-                "labelled": True,
-                "usable_for_training": n > 0,
-            }
-        )
-
-    inner = os.path.join(INTEL_PRED_DIR, "seg_pred")
-    root = inner if os.path.isdir(inner) else INTEL_PRED_DIR
-    n = _count_images(root)
-    rows.append(
-        {
-            "dataset": "Intel scenes",
-            "part": "seg_pred",
-            "present": n > 0,
-            "items": n,
-            "labelled": False,          # no class folders -> no ground truth
-            "usable_for_training": False,
-        }
-    )
 
     df = pd.DataFrame(rows)
     if verbose:
@@ -438,114 +404,6 @@ def load_rice(
         f"Rice ({tag})", RICE_CLASSES, verbose,
         extra={"img_size": img_size, "source_resolution": "250x250"},
     )
-
-
-# --------------------------------------------------------------------------
-# dataset C - Intel Image Classification (scenes, 6 classes)
-# --------------------------------------------------------------------------
-def _intel_root(base: str, label: str) -> str:
-    """Kaggle nests this dataset as seg_train/seg_train/<class>/; accept both."""
-    inner = os.path.join(base, label)
-    return inner if os.path.isdir(inner) else base
-
-
-def require_intel_labels() -> None:
-    """Fail loudly, and with instructions, when the labelled splits are absent.
-
-    `data/` as delivered contains only `seg_pred`, which has no class folders
-    and therefore no ground truth. Training or scoring a classifier on it is
-    impossible, so this is checked before anything else runs.
-    """
-    missing = []
-    for label, base in [("seg_train", INTEL_TRAIN_DIR), ("seg_test", INTEL_TEST_DIR)]:
-        root = _intel_root(base, label)
-        if sum(_count_images(os.path.join(root, c)) for c in INTEL_CLASSES) == 0:
-            missing.append(label)
-    if missing:
-        raise FileNotFoundError(
-            "Intel Image Classification is incomplete in data/.\n"
-            f"  missing labelled split(s): {', '.join(missing)}\n"
-            f"  present: seg_pred ({_count_images(_intel_root(INTEL_PRED_DIR, 'seg_pred')):,} "
-            "images, no labels)\n\n"
-            "seg_pred is the competition's prediction set: flat files, no class\n"
-            "folders, no ground truth. It can be used for an inference demo but\n"
-            "not for training or for measuring accuracy.\n\n"
-            "To complete the dataset:\n"
-            "  pip install kaggle\n"
-            "  kaggle datasets download -d puneet6060/intel-image-classification \\\n"
-            "      -p data/ --unzip\n"
-            "which restores data/seg_train/ and data/seg_test/."
-        )
-
-
-def load_intel_scene(
-    img_size: int = 64,
-    n_train: int | None = None,
-    n_test: int | None = None,
-    seed: int = SEED,
-    verbose: bool = True,
-):
-    """Load the Intel scene images using the publisher's own train/test split."""
-    require_intel_labels()
-
-    X_tr_u8, y_tr = _cached_folder_dataset(
-        f"intel_train_{img_size}.npz",
-        lambda: _load_class_folders(
-            _intel_root(INTEL_TRAIN_DIR, "seg_train"), INTEL_CLASSES, img_size, verbose
-        ),
-        verbose,
-    )
-    X_te_u8, y_te = _cached_folder_dataset(
-        f"intel_test_{img_size}.npz",
-        lambda: _load_class_folders(
-            _intel_root(INTEL_TEST_DIR, "seg_test"), INTEL_CLASSES, img_size, verbose
-        ),
-        verbose,
-    )
-
-    rng = np.random.default_rng(seed)
-    # The folder walk returns images grouped by class; shuffle so that a
-    # subset is not just the first few classes.
-    p = rng.permutation(len(X_tr_u8))
-    X_tr_u8, y_tr = X_tr_u8[p], y_tr[p]
-    p = rng.permutation(len(X_te_u8))
-    X_te_u8, y_te = X_te_u8[p], y_te[p]
-
-    X_tr_u8, y_tr = _subsample(X_tr_u8, y_tr, n_train, rng)
-    X_te_u8, y_te = _subsample(X_te_u8, y_te, n_test, rng)
-
-    tag = _size_tag(len(X_tr_u8), n_train is not None)
-    return _finalise_images(
-        X_tr_u8, y_tr, X_te_u8, y_te,
-        f"Intel scenes ({tag})", INTEL_CLASSES, verbose,
-        extra={"img_size": img_size, "source_resolution": "~150x150"},
-    )
-
-
-def load_intel_unlabeled(img_size: int = 64, n: int | None = 64, seed: int = SEED,
-                         verbose: bool = True):
-    """Load images from `seg_pred` for an inference demo. Returns X only.
-
-    There are no labels here by construction, so this deliberately returns a
-    single array - there is nothing to score against.
-    """
-    root = _intel_root(INTEL_PRED_DIR, "seg_pred")
-    files = sorted(
-        f for f in os.listdir(root)
-        if f.lower().endswith((".jpg", ".jpeg", ".png"))
-    )
-    if not files:
-        raise FileNotFoundError(f"no images under {root}")
-
-    rng = np.random.default_rng(seed)
-    if n is not None and n < len(files):
-        files = [files[i] for i in sorted(rng.permutation(len(files))[:n])]
-
-    X = np.stack([_read_image(os.path.join(root, f), img_size) for f in files])
-    X = X.transpose(0, 3, 1, 2).astype(np.float32) / 255.0
-    if verbose:
-        print(f"seg_pred: {X.shape} (unlabelled - inference demo only)")
-    return X, files
 
 
 # --------------------------------------------------------------------------

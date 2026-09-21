@@ -4,9 +4,8 @@ Six notebooks that redo the assignment on the datasets in `data/`: one tabular p
 problems, each implemented three ways — **NumPy from scratch**, **TensorFlow/Keras** and **PyTorch** —
 followed by the CNN-improvement experiment from `theory_notes.md` §3.
 
-The three datasets are **BRFSS diabetes** (tabular), **Rice** (images) and **MNIST** (images). MNIST is a
-substitute: the Intel scene data in `data/` arrived without its labels, so it cannot be trained on — see
-§1.2.
+The three datasets are **BRFSS diabetes** (tabular), **Rice** (images) and **MNIST** (images). The first
+two are copied into `data/` by hand; MNIST is downloaded automatically.
 
 These are **written but never executed**. Every cell is empty of output on purpose: they are meant to be
 run once, in order, on the machine that has the GPU. Nothing here depends on the six original notebooks in
@@ -41,39 +40,12 @@ data/
 │   ├── Ipsala/        15,000 .jpg
 │   ├── Jasmine/       15,000 .jpg
 │   └── Karacadag/     15,000 .jpg        75,000 images total       ~267 MB
-├── rice_image_dataset_info.md
-├── seg_pred/           7,301 .jpg  (150x150 RGB, NO labels)        ~111 MB
-└── intel_image_classification_info.md
+└── rice_image_dataset_info.md
 
 MNIST is NOT copied by hand - torchvision downloads it into data/mnist/ on first run.
 ```
 
 Run `00_inventory.ipynb` first — it checks all of this against the disk and tells you what is missing.
-
-> ### ⚠ The Intel scene dataset is unusable — MNIST replaces it
->
-> `data/` contains only `seg_pred/`, which is the original competition's **prediction** set: 7,301 loose
-> files with no class sub-folders. In this dataset the folder name *is* the label, so with no class folders
-> there is no ground truth — you cannot train a classifier on it and you cannot measure an accuracy. The
-> labelled splits `seg_train/` (~14,000 images) and `seg_test/` (~3,000) are absent.
->
-> **`03_mnist_cnn.ipynb` fills that slot with MNIST instead**, which `torchvision` downloads automatically
-> on first run (~12 MB into `data/mnist/`). Nothing needs copying by hand. MNIST is a real second image
-> problem — greyscale rather than RGB, ten classes rather than five — and it has a bonus the Intel data
-> could not offer: `02_mnist.ipynb` in the repository root already ran the same architecture on the same
-> subset with the same seed, so §7.2 of notebook 03 doubles as a **reproduction check**.
->
-> `00_inventory.ipynb` still audits `seg_pred` and documents the gap; that finding is part of the write-up.
-> To go back to the scene data, restore the labelled splits:
->
-> ```bash
-> pip install kaggle          # needs an API token at ~/.kaggle/kaggle.json
-> kaggle datasets download -d puneet6060/intel-image-classification -p data/ --unzip
-> ```
->
-> `ass4_newdata.py` keeps `load_intel_scene()`, `load_intel_unlabeled()` and `require_intel_labels()` for
-> that purpose; the loader accepts both the flat layout and Kaggle's double-nested
-> `seg_train/seg_train/<class>/`.
 
 ### 1.3 Python environment
 
@@ -246,9 +218,6 @@ X_train, y_train, X_test, y_test, meta = load_*(...)
 | `inventory()` | DataFrame of what is on disk, per dataset part |
 | `load_diabetes_brfss(...)` | 546,166 × 19, 3 classes. Options: `binary=`, `split_by_year=`, `drop_year=`, `n_subset=` |
 | `load_rice(img_size=32, ...)` | 75,000 images, 5 classes, stratified 80/20 split |
-| `load_intel_scene(img_size=64, ...)` | 6 classes, publisher's own split — **unused**, kept for if the labels are restored |
-| `load_intel_unlabeled(...)` | `seg_pred` images, **X only** — there are no labels to return |
-| `require_intel_labels()` | raises with download instructions if the labelled splits are missing |
 
 MNIST does not appear in this table: it comes from `ass4_utils.load_mnist`, the same loader the root
 `02_mnist.ipynb` uses. That is deliberate — notebook 03 must read exactly what the committed run read for
