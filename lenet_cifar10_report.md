@@ -124,6 +124,183 @@ lượng framework. Cột `n_params` và `test_accuracy` thì so sánh được 
 | Vòng huấn luyện | for-loop tường minh | `model.fit()` | for-loop tường minh |
 | Phần cứng | CPU | CPU | GPU (cuDNN) |
 
+## 3.3 Định nghĩa mô hình — cùng một mạng, ba cách viết
+
+Ba đoạn dưới đây trích nguyên văn từ `07_cifar10_lenet.ipynb`. Cả ba dựng đúng cùng một kiến trúc
+và phải ra cùng một số tham số — notebook có `assert` kiểm tra điều đó ngay sau mỗi đoạn.
+
+**A — Scratch (NumPy).** Mọi lớp đến từ `scratch_nn.py`, nơi forward và backward đều
+viết tay. Chú thích `# C1`, `# S2`… bám đúng ký hiệu bài báo 1998.
+
+```python
+U.set_seed(U.SEED)
+
+def build_scratch_lenet():
+    return S.Sequential([
+        S.Conv2D(C, C1_OUT, k=KERN, stride=1, pad=PAD1, seed=1),   # C1
+        S.ReLU(),
+        S.MaxPool2D(2, 2),                                          # S2
+        S.Conv2D(C1_OUT, C3_OUT, k=KERN, stride=1, pad=PAD3, seed=2),  # C3
+        S.ReLU(),
+        S.MaxPool2D(2, 2),                                          # S4
+        S.Flatten(),
+        S.Dense(FLAT, F5_OUT, seed=3),                              # F5
+        S.ReLU(),
+        S.Dense(F5_OUT, F6_OUT, seed=4),                            # F6
+        S.ReLU(),
+        S.Dense(F6_OUT, N_CLASSES, seed=5),                         # output
+    ])
+
+scratch_model = build_scratch_lenet()
+```
+
+**B — TensorFlow / Keras.** Khai báo thay vì tự dựng. Hai tham số `padding` tái hiện
+đúng cặp `pad` dùng ở bản scratch.
+
+```python
+U.set_seed(U.SEED)
+
+# channels-first -> channels-last for Keras
+Xtr_k = np.transpose(X_train, (0, 2, 3, 1))
+Xte_k = np.transpose(X_test,  (0, 2, 3, 1))
+print("keras input shape:", Xtr_k.shape)
+
+def build_keras_lenet(name):
+    return keras.Sequential([
+        keras.layers.Input(shape=(H, W, C)),
+        keras.layers.Conv2D(C1_OUT, KERN, padding="valid", activation="relu"),
+        keras.layers.MaxPooling2D(2),
+        keras.layers.Conv2D(C3_OUT, KERN, padding="valid", activation="relu"),
+        keras.layers.MaxPooling2D(2),
+        keras.layers.Flatten(),
+        keras.layers.Dense(F5_OUT, activation="relu"),
+        keras.layers.Dense(F6_OUT, activation="relu"),
+        keras.layers.Dense(N_CLASSES),
+    ], name=name)
+
+keras_model = build_keras_lenet("lenet5")
+keras_model.compile(
+    optimizer=keras.optimizers.Adam(learning_rate=LR),
+    loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+    metrics=["accuracy"],
+)
+```
+
+**C — PyTorch.** Tách `features` (C1–S4) và `classifier` (F5–output) để hai nửa của
+LeNet hiện rõ trong cấu trúc lớp.
+
+```python
+U.set_seed(U.SEED)
+
+class LeNet5(nn.Module):
+    """LeNet-5 (LeCun et al., 1998), modernized with ReLU + max pooling."""
+
+    def __init__(self, in_ch, n_classes):
+        super().__init__()
+        self.features = nn.Sequential(
+            nn.Conv2d(in_ch, C1_OUT, KERN, padding=PAD1),    # C1
+            nn.ReLU(),
+            nn.MaxPool2d(2),                                  # S2
+            nn.Conv2d(C1_OUT, C3_OUT, KERN, padding=PAD3),   # C3
+            nn.ReLU(),
+            nn.MaxPool2d(2),                                  # S4
+        )
+        self.classifier = nn.Sequential(
+            nn.Flatten(),
+            nn.Linear(FLAT, F5_OUT),                          # F5
+            nn.ReLU(),
+            nn.Linear(F5_OUT, F6_OUT),                        # F6
+            nn.ReLU(),
+            nn.Linear(F6_OUT, n_classes),                     # output
+        )
+
+    def forward(self, x):
+        x = self.features(x)        # feature extraction
+        x = self.classifier(x)      # classification
+        return x
+
+torch_model = LeNet5(C, N_CLASSES).to(DEVICE)
+n_torch = sum(p.numel() for p in torch_model.parameters())
+```
+
+## 3.4 Vòng huấn luyện
+
+**A — Scratch.** `S.fit` tự hiện thực vòng lặp: forward → loss → backward → optimizer step.
+
+```python
+U.set_seed(U.SEED)
+with U.Timer() as t_scratch:
+    hist_scratch = S.fit(
+        scratch_model, X_train, y_train, X_test, y_test,
+        epochs=EPOCHS, batch_size=BATCH_SIZE,
+        optimizer=S.Adam(LR), seed=U.SEED,
+    )
+print(f"\ntotal training time: {t_scratch.seconds:.1f}s")
+```
+
+**B — Keras.** Vòng lặp nằm bên trong `.fit()`, không nhìn thấy được.
+
+```python
+U.set_seed(U.SEED)
+with U.Timer() as t_keras:
+    hk = keras_model.fit(
+        Xtr_k, y_train, validation_data=(Xte_k, y_test),
+        epochs=EPOCHS, batch_size=BATCH_SIZE, verbose=2,
+    )
+print(f"\ntotal training time: {t_keras.seconds:.1f}s")
+```
+
+**C — PyTorch.** Vòng lặp viết tường minh, nên chu trình
+`zero_grad → forward → loss → backward → step` hiện nguyên trên mã nguồn.
+
+```python
+def train_torch(model, Xtr, ytr, Xte, yte, epochs=EPOCHS, batch_size=BATCH_SIZE, lr=LR, log=True):
+    # Explicit loop: zero grad -> forward -> loss -> backward -> update.
+    loader = DataLoader(TensorDataset(torch.tensor(Xtr), torch.tensor(ytr)),
+                        batch_size=batch_size, shuffle=True)
+    Xte_t = torch.tensor(Xte).to(DEVICE)
+    criterion = nn.CrossEntropyLoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+    history = {"loss": [], "val_acc": []}
+
+    with U.Timer() as t:
+        for epoch in range(1, epochs + 1):
+            model.train()
+            running, nb = 0.0, 0
+            for xb, yb in loader:
+                xb, yb = xb.to(DEVICE), yb.to(DEVICE)
+
+                optimizer.zero_grad()
+                logits = model(xb)
+                loss = criterion(logits, yb)
+                loss.backward()
+                optimizer.step()
+
+                running += loss.item(); nb += 1
+
+            model.eval()
+            with torch.no_grad():
+                preds = []
+                for i in range(0, len(Xte_t), 1024):
+                    preds.append(model(Xte_t[i:i + 1024]).argmax(1).cpu().numpy())
+                acc = float((np.concatenate(preds) == yte).mean())
+
+            history["loss"].append(running / nb)
+            history["val_acc"].append(acc)
+            if log:
+                print(f"epoch {epoch}/{epochs}  loss {running/nb:.4f}  test_acc {acc:.4f}")
+
+    return history, t.seconds
+
+
+hist_torch, secs_torch = train_torch(torch_model, X_train, y_train, X_test, y_test)
+print(f"\ntotal training time: {secs_torch:.1f}s")
+```
+
+Ba cách này cho cùng một thuật toán. Khác biệt chỉ nằm ở chỗ **bao nhiêu phần của vòng
+lặp được giấu đi**: Keras giấu hết, PyTorch giấu mỗi phần tính gradient, bản scratch
+không giấu gì.
+
 ---
 
 # 4. Kết quả
