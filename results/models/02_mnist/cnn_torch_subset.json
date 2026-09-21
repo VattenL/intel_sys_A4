@@ -1,0 +1,14 @@
+{
+  "name": "cnn_torch_subset",
+  "framework": "torch",
+  "class": "MnistCNN",
+  "n_params": 20490,
+  "weights_file": "cnn_torch_subset.pt",
+  "self_contained": false,
+  "saved_at": "2026-09-21 20:45:20",
+  "architecture": "CNN 2conv+fc",
+  "dataset": "MNIST (10k subset)",
+  "epochs": 5,
+  "test_accuracy": 0.9835,
+  "f1_macro": 0.9835648613002886
+}

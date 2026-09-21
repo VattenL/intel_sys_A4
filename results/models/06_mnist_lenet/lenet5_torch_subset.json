@@ -1,0 +1,14 @@
+{
+  "name": "lenet5_torch_subset",
+  "framework": "torch",
+  "class": "LeNet5",
+  "n_params": 61706,
+  "weights_file": "lenet5_torch_subset.pt",
+  "self_contained": false,
+  "saved_at": "2026-09-21 20:50:18",
+  "architecture": "LeNet-5",
+  "dataset": "MNIST (10k subset)",
+  "epochs": 5,
+  "test_accuracy": 0.978,
+  "f1_macro": 0.9779982356343823
+}

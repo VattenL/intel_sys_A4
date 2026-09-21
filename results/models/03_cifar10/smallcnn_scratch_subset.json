@@ -1,0 +1,14 @@
+{
+  "name": "smallcnn_scratch_subset",
+  "framework": "scratch",
+  "class": "Sequential",
+  "n_params": 545098,
+  "weights_file": "smallcnn_scratch_subset.npz",
+  "self_contained": false,
+  "saved_at": "2026-09-21 20:48:30",
+  "architecture": "SmallCNN",
+  "dataset": "CIFAR-10 (5k subset)",
+  "epochs": 5,
+  "test_accuracy": 0.5055,
+  "f1_macro": 0.5032447799597594
+}

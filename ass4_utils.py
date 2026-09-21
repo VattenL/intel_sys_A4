@@ -11,6 +11,7 @@ The loaders therefore return plain NumPy arrays and always use the same seed.
 from __future__ import annotations
 
 import os
+import json
 import time
 import zipfile
 import urllib.request
@@ -431,3 +432,166 @@ def results_table(results) -> pd.DataFrame:
     """Turn a list of RunResult into the comparison table slide 29 asks for."""
     df = pd.DataFrame([r.row() for r in results])
     return df.round(4)
+
+
+# --------------------------------------------------------------------------
+# model persistence
+# --------------------------------------------------------------------------
+# Every notebook trains the same architecture three ways, so the weights are
+# saved three ways too. One directory per notebook, one sidecar JSON per model
+# recording what it is and how it scored.
+#
+#   results/models/<subdir>/<name>.pt      PyTorch  state_dict
+#   results/models/<subdir>/<name>.keras   Keras    full model (self-contained)
+#   results/models/<subdir>/<name>.npz     scratch  one array per layer param
+#   results/models/<subdir>/<name>.json    metadata for all three
+#
+# .keras reloads on its own. The other two only hold weights: rebuild the
+# architecture first, then hand the instance to load_model(). That is the same
+# contract variants.py already uses for results/variant_cache/.
+MODELS = os.path.join(HERE, "results", "models")
+
+_EXT = {"torch": ".pt", "keras": ".keras", "scratch": ".npz"}
+
+
+def _framework_of(model) -> str:
+    """Identify a model's framework by duck-typing, importing nothing."""
+    if hasattr(model, "state_dict") and hasattr(model, "parameters"):
+        return "torch"
+    if hasattr(model, "count_params") and hasattr(model, "save"):
+        return "keras"
+    if hasattr(model, "layers") and all(hasattr(l, "params") for l in model.layers):
+        return "scratch"
+    raise TypeError(f"unrecognised model object: {type(model).__name__}")
+
+
+def _count_params(model, framework: str) -> int:
+    if framework == "torch":
+        return int(sum(p.numel() for p in model.parameters()))
+    if framework == "keras":
+        return int(model.count_params())
+    return int(model.n_params())
+
+
+def model_dir(subdir: str = "") -> str:
+    d = os.path.join(MODELS, subdir) if subdir else MODELS
+    os.makedirs(d, exist_ok=True)
+    return d
+
+
+def save_model(model, name: str, subdir: str = "", **meta) -> str:
+    """Persist one trained model plus a metadata sidecar. Returns the weights path.
+
+    name    file stem, e.g. "lenet5_torch_subset"
+    subdir  folder under results/models/, normally the notebook stem
+    meta    anything worth recording next to the weights (dataset, accuracy, ...)
+    """
+    framework = _framework_of(model)
+    d = model_dir(subdir)
+    path = os.path.join(d, name + _EXT[framework])
+
+    if framework == "torch":
+        import torch
+
+        torch.save(model.state_dict(), path)
+    elif framework == "keras":
+        model.save(path)
+    else:
+        arrays = {
+            f"L{i}__{k}": v
+            for i, layer in enumerate(model.layers)
+            for k, v in layer.params.items()
+        }
+        np.savez_compressed(path, **arrays)
+
+    record = {
+        "name": name,
+        "framework": framework,
+        "class": type(model).__name__,
+        "n_params": _count_params(model, framework),
+        "weights_file": os.path.basename(path),
+        "self_contained": framework == "keras",
+        "saved_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+    }
+    record.update(meta)
+    with open(os.path.join(d, name + ".json"), "w", encoding="utf-8") as f:
+        json.dump(record, f, indent=2, default=str)
+
+    size_kb = os.path.getsize(path) / 1024
+    print(f"saved {os.path.relpath(path, HERE)}  ({record['n_params']:,} params, {size_kb:.0f} KB)")
+    return path
+
+
+def save_all(models: dict, subdir: str = "", **meta) -> dict:
+    """save_model() over a {name: model} mapping. Skips names mapped to None."""
+    return {
+        name: save_model(m, name, subdir, **meta)
+        for name, m in models.items()
+        if m is not None
+    }
+
+
+def load_model(name: str, subdir: str = "", model=None, device: str = "cpu"):
+    """Reload a saved model.
+
+    Keras models come back on their own. PyTorch and scratch models only hold
+    weights, so pass a freshly built instance of the same architecture as
+    `model` and it is filled in place and returned.
+    """
+    d = os.path.join(MODELS, subdir) if subdir else MODELS
+    meta_path = os.path.join(d, name + ".json")
+    if not os.path.exists(meta_path):
+        raise FileNotFoundError(f"no saved model {name!r} in {d}")
+    with open(meta_path, encoding="utf-8") as f:
+        record = json.load(f)
+
+    path = os.path.join(d, record["weights_file"])
+    framework = record["framework"]
+
+    if framework == "keras":
+        import keras
+
+        return keras.models.load_model(path)
+
+    if model is None:
+        raise ValueError(
+            f"{name!r} is a {framework} model and stores weights only - "
+            f"build a {record['class']} first and pass it as model="
+        )
+
+    if framework == "torch":
+        import torch
+
+        model.load_state_dict(torch.load(path, map_location=device))
+        model.to(device)
+        model.eval()
+        return model
+
+    with np.load(path) as z:
+        for key in z.files:
+            idx, pname = key.split("__")
+            layer = model.layers[int(idx[1:])]
+            want = layer.params[pname].shape
+            if z[key].shape != want:
+                raise ValueError(f"{key}: saved {z[key].shape} != model {want}")
+            layer.params[pname] = z[key]
+    return model
+
+
+def list_models(subdir: str = "") -> pd.DataFrame:
+    """Every saved model under results/models/, read from the sidecar JSONs."""
+    root = os.path.join(MODELS, subdir) if subdir else MODELS
+    rows = []
+    for dirpath, _, files in os.walk(root):
+        for fn in sorted(files):
+            if not fn.endswith(".json"):
+                continue
+            with open(os.path.join(dirpath, fn), encoding="utf-8") as f:
+                r = json.load(f)
+            r["subdir"] = os.path.relpath(dirpath, MODELS)
+            rows.append(r)
+    if not rows:
+        return pd.DataFrame(columns=["subdir", "name", "framework", "n_params"])
+    df = pd.DataFrame(rows)
+    front = [c for c in ["subdir", "name", "framework", "class", "n_params"] if c in df]
+    return df[front + [c for c in df.columns if c not in front]]

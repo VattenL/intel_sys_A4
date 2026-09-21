@@ -1,0 +1,14 @@
+{
+  "name": "lenet5_torch_full",
+  "framework": "torch",
+  "class": "LeNet5",
+  "n_params": 62006,
+  "weights_file": "lenet5_torch_full.pt",
+  "self_contained": false,
+  "saved_at": "2026-09-21 20:51:59",
+  "architecture": "LeNet-5",
+  "dataset": "CIFAR-10 (full 50k)",
+  "epochs": 5,
+  "test_accuracy": 0.6162,
+  "f1_macro": 0.6150916517534334
+}

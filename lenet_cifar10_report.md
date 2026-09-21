@@ -309,9 +309,9 @@ không giấu gì.
 
 | Framework | Tham số | Accuracy | Macro-F1 | Train (s) | Phần cứng |
 |---|---:|---:|---:|---:|---|
-| TensorFlow/Keras | 62,006 | 45.45% | 0.4528 | 4.7 | CPU |
-| PyTorch | 62,006 | 44.60% | 0.4363 | 1.5 | GPU |
-| Scratch (NumPy) | 62,006 | 42.70% | 0.4216 | 28.7 | CPU |
+| TensorFlow/Keras | 62,006 | 45.45% | 0.4528 | 4.4 | CPU |
+| PyTorch | 62,006 | 43.75% | 0.4273 | 2.0 | GPU |
+| Scratch (NumPy) | 62,006 | 42.70% | 0.4216 | 27.4 | CPU |
 
 Ba framework ra **đúng 62,006 tham số**, khớp với tính tay ở mục 1.3 — xác nhận kiến trúc
 được dịch đúng sang cả ba nơi.
@@ -323,10 +323,10 @@ trên MNIST. Bài toán càng khó, cùng một mạng càng nhạy với khởi
 
 | Framework | Accuracy | Macro-F1 | Train (s) |
 |---|---:|---:|---:|
-| PyTorch | 60.75% | 0.6070 | 30.9 |
-| TensorFlow/Keras | 60.32% | 0.5985 | 29.3 |
+| PyTorch | 61.62% | 0.6151 | 15.7 |
+| TensorFlow/Keras | 60.32% | 0.5985 | 23.8 |
 
-Gấp 10 lần dữ liệu đổi lấy **+16.15 điểm** (44.60% → 60.75%). So với MNIST, nơi cùng phép
+Gấp 10 lần dữ liệu đổi lấy **+17.87 điểm** (43.75% → 61.62%). So với MNIST, nơi cùng phép
 tăng dữ liệu chỉ cho khoảng +1 điểm, con số này cho thấy CIFAR-10 còn rất xa mức bão hoà.
 
 ---
@@ -342,32 +342,32 @@ tăng dữ liệu chỉ cho khoảng +1 điểm, con số này cho thấy CIFAR-
 |---|---|---:|---:|---:|
 | CIFAR-10 (5k subset) | Scratch (NumPy) | 50.55% | 42.70% | −7.85 |
 | CIFAR-10 (5k subset) | TensorFlow/Keras | 54.85% | 45.45% | −9.40 |
-| CIFAR-10 (5k subset) | PyTorch | 53.10% | 44.60% | −8.50 |
-| CIFAR-10 (full 50k) | TensorFlow/Keras | 70.43% | 60.32% | −10.11 |
-| CIFAR-10 (full 50k) | PyTorch | 71.90% | 60.75% | **−11.15** |
+| CIFAR-10 (5k subset) | PyTorch | 53.25% | 43.75% | −9.50 |
+| CIFAR-10 (full 50k) | TensorFlow/Keras | 70.43% | 60.32% | **−10.11** |
+| CIFAR-10 (full 50k) | PyTorch | 71.37% | 61.62% | −9.75 |
 
-**Chênh lệch trung bình: −9.40 điểm.** LeNet-5 thua ở **cả năm** phép so sánh.
+**Chênh lệch trung bình: −9.32 điểm.** LeNet-5 thua ở **cả năm** phép so sánh.
 
-Đây là kết quả trái ngược hẳn với MNIST, nơi chênh lệch trung bình chỉ −0.22 điểm và hai
+Đây là kết quả trái ngược hẳn với MNIST, nơi chênh lệch trung bình chỉ −0.12 điểm và hai
 kiến trúc thực chất là hoà.
 
 ## 5.2 Phát hiện quan trọng nhất — khoảng cách **rộng ra** khi có thêm dữ liệu
 
 | Lượng dữ liệu | Chênh lệch trung bình |
 |---|---:|
-| 5k subset | −8.58 điểm |
-| full 50k | **−10.63 điểm** |
+| 5k subset | −8.92 điểm |
+| full 50k | **−9.93 điểm** |
 
 Trực giác thông thường nói ngược lại: thêm dữ liệu thì mô hình yếu sẽ đuổi kịp. Ở đây
-điều ngược lại xảy ra — dữ liệu gấp 10 lần làm khoảng cách **rộng thêm 2 điểm**.
+điều ngược lại xảy ra — dữ liệu gấp 10 lần làm khoảng cách **rộng thêm 1 điểm**.
 
 Nhìn theo mức hưởng lợi từ dữ liệu:
 
 ```text
-LeNet-5   44.60%  →  60.75%     +16.15 điểm
-SmallCNN  53.10%  →  71.90%     +18.80 điểm
+LeNet-5   43.75%  →  61.62%     +17.87 điểm
+SmallCNN  53.25%  →  71.37%     +18.12 điểm
                                  ─────────
-SmallCNN tận dụng dữ liệu tốt hơn  +2.65 điểm
+SmallCNN tận dụng dữ liệu tốt hơn  +0.25 điểm
 ```
 
 Đây là dấu hiệu kinh điển của **nghẽn dung lượng (capacity bottleneck)**. Khi mô hình
@@ -396,32 +396,32 @@ thật sự, và không lượng huấn luyện nào chữa được.
 
 | | Tham số | Conv MACs | Scratch train (s) |
 |---|---:|---:|---:|
-| SmallCNN | 545,098 | 5,603,328 | 83.0 |
-| LeNet-5 | 62,006 | **592,800** | **28.7** |
+| SmallCNN | 545,098 | 5,603,328 | 65.2 |
+| LeNet-5 | 62,006 | **592,800** | **27.4** |
 
-LeNet-5 rẻ hơn 9.45 lần về phép tính conv và chạy nhanh hơn 2.89 lần ở bản NumPy.
+LeNet-5 rẻ hơn 9.45 lần về phép tính conv và chạy nhanh hơn 2.38 lần ở bản NumPy.
 
 Nếu bài toán là chạy trên thiết bị nhúng, đó là ưu thế thật. Nhưng ở đây câu hỏi là
-accuracy, và LeNet trả giá 9.4 điểm để đổi lấy khoản tiết kiệm đó. **Trên CIFAR-10 thì
+accuracy, và LeNet trả giá 9.3 điểm để đổi lấy khoản tiết kiệm đó. **Trên CIFAR-10 thì
 đó là một đánh đổi tồi.**
 
 ## 5.5 Mạng nhầm lẫn ở đâu
 
-Recall theo từng lớp, lần chạy tốt nhất (PyTorch, full 50k, 60.75%):
+Recall theo từng lớp, lần chạy tốt nhất (PyTorch, full 50k, 61.62%):
 
 | Lớp | Recall | | Lớp | Recall |
 |---|---:|---|---|---:|
-| frog | 0.766 | | horse | 0.618 |
-| ship | 0.740 | | cat | 0.539 |
-| automobile | 0.691 | | deer | 0.502 |
-| truck | 0.690 | | bird | 0.464 |
-| airplane | 0.677 | | **dog** | **0.388** |
+| ship | 0.770 | | horse | 0.642 |
+| frog | 0.755 | | cat | 0.537 |
+| automobile | 0.728 | | dog | 0.462 |
+| truck | 0.718 | | bird | 0.452 |
+| airplane | 0.652 | | **deer** | **0.446** |
 
-Cặp nhầm nặng nhất: **dog → cat, 322 ảnh**.
+Cặp nhầm nặng nhất: **dog → cat, 275 ảnh**.
 
 Mô hình phân biệt tốt các lớp có **hình bao và nền đặc trưng** — ếch (nền xanh đồng nhất),
-tàu (nền nước), xe cộ (đường nét thẳng, bánh xe). Nó sụp ở các lớp **động vật bốn chân có
-lông**, nơi cần kết cấu tinh tế để tách chó khỏi mèo khỏi hươu.
+tàu (nền nước), xe cộ (đường nét thẳng, bánh xe). Nó sụp ở các lớp **động vật**, nơi cần kết cấu tinh tế để tách chó khỏi mèo khỏi hươu —
+và ở chim, nơi tư thế lẫn nền đều thay đổi liên tục.
 
 Điều này khớp chính xác với chẩn đoán ở mục 5.3: sáu bộ lọc 5×5 đủ để bắt đường bao và
 mảng màu lớn, nhưng không đủ để mã hoá khác biệt kết cấu giữa lông chó và lông mèo.
@@ -430,7 +430,7 @@ mảng màu lớn, nhưng không đủ để mã hoá khác biệt kết cấu g
 
 # 6. Kết luận
 
-**LeNet-5 thua rõ ràng trên CIFAR-10: −9.40 điểm trung bình, thua ở cả năm phép so sánh,
+**LeNet-5 thua rõ ràng trên CIFAR-10: −9.32 điểm trung bình, thua ở cả năm phép so sánh,
 và khoảng cách rộng thêm khi có nhiều dữ liệu hơn.**
 
 Điều đó **không** có nghĩa LeNet-5 là kiến trúc tồi. Cùng mạng này hoà với baseline trên
@@ -469,9 +469,9 @@ Báo cáo này đo trục thứ nhất. Khi dung lượng là thứ đang thiế
 ## 6.2 Hạn chế
 
 Kết quả dựa trên **một seed, 5 epochs, không tinh chỉnh hyperparameter, không data
-augmentation**. Con số tuyệt đối (60.75%) thấp hơn nhiều so với mức CIFAR-10 hiện đại
+augmentation**. Con số tuyệt đối (61.62%) thấp hơn nhiều so với mức CIFAR-10 hiện đại
 (>95%) và không nhằm cạnh tranh — chúng chỉ nhằm so sánh công bằng giữa hai kiến trúc
 dưới cùng điều kiện.
 
-Chênh lệch −9.40 điểm thì đủ lớn để vượt xa vùng nhiễu, nên kết luận về hướng là chắc
+Chênh lệch −9.32 điểm thì đủ lớn để vượt xa vùng nhiễu, nên kết luận về hướng là chắc
 chắn; riêng độ lớn chính xác thì nên hiểu là xấp xỉ.

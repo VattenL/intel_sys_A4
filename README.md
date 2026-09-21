@@ -16,6 +16,8 @@ across three datasets, followed by an architecture-evolution experiment.
 | `ass4_utils.py` | Shared data loading, metrics, timing and plotting — guarantees all three legs see identical splits |
 | `scratch_nn.py` | The from-scratch framework: Conv2D/MaxPool2D/Dense/ReLU/Dropout with hand-derived gradients, Adam, and a finite-difference gradient checker |
 | `results/` | Per-notebook JSON plus `all_runs.csv` |
+| `results/models/` | Trained weights, one folder per notebook — committed, so the networks ship with the code |
+| `results/variant_cache/` | Trained weights for M1..M4 — gitignored, rebuilt by `python prefill_variants.py` |
 
 Run the notebooks in order; `04_compare.ipynb` reads the JSON the first three write.
 
@@ -43,29 +45,29 @@ All three legs pull their arrays from one loader with one seed, so they train on
 
 | Framework | Dataset | Params | Epochs | Train (s) | Accuracy | Macro F1 |
 |---|---|---|---|---|---|---|
-| Scratch (NumPy) | Diabetes 130-US hospitals | 31,491 | 15 | 8.5 | 0.6094 | 0.3450 |
-| TensorFlow/Keras | Diabetes 130-US hospitals | 31,491 | 15 | 13.8 | 0.6077 | 0.3686 |
-| PyTorch | Diabetes 130-US hospitals | 31,491 | 15 | 19.3 | 0.6105 | 0.3694 |
+| Scratch (NumPy) | Diabetes 130-US hospitals | 31,491 | 15 | 6.0 | 0.6094 | 0.3450 |
+| TensorFlow/Keras | Diabetes 130-US hospitals | 31,491 | 15 | 7.8 | 0.6077 | 0.3686 |
+| PyTorch | Diabetes 130-US hospitals | 31,491 | 15 | 9.2 | 0.6105 | 0.3694 |
 
 ### MNIST — CNN
 
 | Framework | Dataset | Params | Epochs | Train (s) | Accuracy | Macro F1 |
 |---|---|---|---|---|---|---|
-| Scratch (NumPy) | MNIST (10k subset) | 20,490 | 5 | 75.1 | 0.9810 | 0.9810 |
-| TensorFlow/Keras | MNIST (10k subset) | 20,490 | 5 | 6.9 | 0.9755 | 0.9756 |
-| PyTorch | MNIST (10k subset) | 20,490 | 5 | 3.7 | 0.9835 | 0.9836 |
-| PyTorch | MNIST (full 60k) | 20,490 | 5 | 17.4 | 0.9874 | 0.9874 |
-| TensorFlow/Keras | MNIST (full 60k) | 20,490 | 5 | 32.1 | 0.9855 | 0.9854 |
+| Scratch (NumPy) | MNIST (10k subset) | 20,490 | 5 | 36.2 | 0.9810 | 0.9810 |
+| TensorFlow/Keras | MNIST (10k subset) | 20,490 | 5 | 4.1 | 0.9755 | 0.9756 |
+| PyTorch | MNIST (10k subset) | 20,490 | 5 | 1.9 | 0.9835 | 0.9836 |
+| PyTorch | MNIST (full 60k) | 20,490 | 5 | 9.1 | 0.9875 | 0.9874 |
+| TensorFlow/Keras | MNIST (full 60k) | 20,490 | 5 | 19.2 | 0.9855 | 0.9854 |
 
 ### CIFAR-10 — CNN
 
 | Framework | Dataset | Params | Epochs | Train (s) | Accuracy | Macro F1 |
 |---|---|---|---|---|---|---|
-| Scratch (NumPy) | CIFAR-10 (5k subset) | 545,098 | 5 | 83.0 | 0.5055 | 0.5032 |
-| TensorFlow/Keras | CIFAR-10 (5k subset) | 545,098 | 5 | 9.9 | 0.5485 | 0.5452 |
-| PyTorch | CIFAR-10 (5k subset) | 545,098 | 5 | 2.8 | 0.5310 | 0.5268 |
-| PyTorch | CIFAR-10 (full 50k) | 545,098 | 5 | 34.7 | 0.7190 | 0.7178 |
-| TensorFlow/Keras | CIFAR-10 (full 50k) | 545,098 | 5 | 75.9 | 0.7043 | 0.6990 |
+| Scratch (NumPy) | CIFAR-10 (5k subset) | 545,098 | 5 | 65.2 | 0.5055 | 0.5032 |
+| TensorFlow/Keras | CIFAR-10 (5k subset) | 545,098 | 5 | 9.1 | 0.5485 | 0.5452 |
+| PyTorch | CIFAR-10 (5k subset) | 545,098 | 5 | 2.1 | 0.5325 | 0.5288 |
+| PyTorch | CIFAR-10 (full 50k) | 545,098 | 5 | 17.3 | 0.7137 | 0.7123 |
+| TensorFlow/Keras | CIFAR-10 (full 50k) | 545,098 | 5 | 70.0 | 0.7043 | 0.6990 |
 
 ### Improved CNN models (tutorial section 45, full CIFAR-10)
 
@@ -105,21 +107,21 @@ head — modernized with ReLU and max pooling in place of tanh and average pooli
 
 | Framework | Dataset | Params | Epochs | Train (s) | Accuracy | Macro F1 |
 |---|---|---|---|---|---|---|
-| Scratch (NumPy) | MNIST (10k subset) | 61,706 | 5 | 32.9 | 0.9775 | 0.9772 |
-| TensorFlow/Keras | MNIST (10k subset) | 61,706 | 5 | 6.6 | 0.9760 | 0.9762 |
-| PyTorch | MNIST (10k subset) | 61,706 | 5 | 4.2 | 0.9755 | 0.9754 |
-| PyTorch | MNIST (full 60k) | 61,706 | 5 | 23.0 | 0.9870 | 0.9868 |
-| TensorFlow/Keras | MNIST (full 60k) | 61,706 | 5 | 29.9 | 0.9859 | 0.9858 |
+| Scratch (NumPy) | MNIST (10k subset) | 61,706 | 5 | 30.4 | 0.9775 | 0.9772 |
+| TensorFlow/Keras | MNIST (10k subset) | 61,706 | 5 | 5.9 | 0.9760 | 0.9762 |
+| PyTorch | MNIST (10k subset) | 61,706 | 5 | 3.4 | 0.9780 | 0.9780 |
+| PyTorch | MNIST (full 60k) | 61,706 | 5 | 17.4 | 0.9894 | 0.9892 |
+| TensorFlow/Keras | MNIST (full 60k) | 61,706 | 5 | 25.4 | 0.9859 | 0.9858 |
 
 #### CIFAR-10 — LeNet-5
 
 | Framework | Dataset | Params | Epochs | Train (s) | Accuracy | Macro F1 |
 |---|---|---|---|---|---|---|
-| Scratch (NumPy) | CIFAR-10 (5k subset) | 62,006 | 5 | 28.7 | 0.4270 | 0.4216 |
-| TensorFlow/Keras | CIFAR-10 (5k subset) | 62,006 | 5 | 4.7 | 0.4545 | 0.4528 |
-| PyTorch | CIFAR-10 (5k subset) | 62,006 | 5 | 1.5 | 0.4460 | 0.4363 |
-| PyTorch | CIFAR-10 (full 50k) | 62,006 | 5 | 30.9 | 0.6075 | 0.6070 |
-| TensorFlow/Keras | CIFAR-10 (full 50k) | 62,006 | 5 | 29.3 | 0.6032 | 0.5985 |
+| Scratch (NumPy) | CIFAR-10 (5k subset) | 62,006 | 5 | 27.4 | 0.4270 | 0.4216 |
+| TensorFlow/Keras | CIFAR-10 (5k subset) | 62,006 | 5 | 4.4 | 0.4545 | 0.4528 |
+| PyTorch | CIFAR-10 (5k subset) | 62,006 | 5 | 2.0 | 0.4375 | 0.4273 |
+| PyTorch | CIFAR-10 (full 50k) | 62,006 | 5 | 15.7 | 0.6162 | 0.6151 |
+| TensorFlow/Keras | CIFAR-10 (full 50k) | 62,006 | 5 | 23.8 | 0.6032 | 0.5985 |
 
 One architecture, two datasets of the same spatial size, opposite outcomes. MNIST is the problem
 LeNet-5 was designed for and it holds its own there. CIFAR-10 is 32x32 colour photographs, and the same
@@ -139,6 +141,38 @@ Computed by hand from the tutorial's section 43 formulas before building anythin
 - **MNIST (LeNet-5)**: 61,706 parameters — all three frameworks agree
 - **CIFAR-10 (LeNet-5)**: 62,006 parameters — all three frameworks agree
 
+
+## Saved models
+
+Every notebook persists the networks it trains, not just the numbers they produced. Each leg is written in
+its own framework's native format under `results/models/<notebook>/`, beside a JSON sidecar recording the
+architecture, the parameter count, and the accuracy those exact weights scored:
+
+| Leg | Format | Reloads on its own? |
+|---|---|---|
+| Scratch (NumPy) | `.npz` — one array per layer parameter | no |
+| TensorFlow/Keras | `.keras` — graph and weights together | **yes** |
+| PyTorch | `.pt` — `state_dict` | no |
+
+```python
+import ass4_utils as U
+
+U.list_models()                                   # everything saved, from the sidecars
+U.list_models("06_mnist_lenet")                   # one notebook
+
+keras_model = U.load_model("lenet5_keras_subset", "06_mnist_lenet")       # standalone
+torch_model = U.load_model("lenet5_torch_subset", "06_mnist_lenet",
+                           model=LeNet5(C, N_CLASSES))                    # needs an instance
+```
+
+`.pt` and `.npz` hold weights only, so reloading them means rebuilding the architecture first and passing the
+fresh instance as `model=`. That is deliberate: `state_dict` is the portable half of a PyTorch model, while
+pickling the class ties the file to the notebook that defined it. `04_compare.ipynb` already followed this
+contract through `results/variant_cache/`; the other notebooks now do too.
+
+These weights are committed, so cloning the repo is enough to load any of the trained networks without
+retraining. The M1..M4 cache under `results/variant_cache/` stays gitignored — rebuild it with
+`python prefill_variants.py`.
 
 ## What the experiments show
 
@@ -166,7 +200,7 @@ notebooks 2 and 3. A CNN is a choice justified by a property of the input, not a
   stages for M1..M4), no data augmentation, no learning-rate schedule, no hyperparameter tuning. These are
   not competitive CIFAR-10 numbers and are not meant to be.
 - One seed per configuration. Notebook 04 measures the noise floor directly by re-running one model across
-  five seeds: the seed-only spread was 0.046 accuracy and the framework spread on the same subset was 0.043,
+  five seeds: the seed-only spread was 0.053 accuracy and the framework spread on the same subset was 0.043,
   so the frameworks fall inside the noise band. The M1..M4 gaps are larger, but that experiment has no
   repeated-seed band of its own.
 - The GPU in this machine thermally throttles at 96-98 C under sustained load. The M1..M4 runs therefore

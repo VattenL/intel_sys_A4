@@ -81,6 +81,8 @@ across three datasets, followed by an architecture-evolution experiment.
 | `ass4_utils.py` | Shared data loading, metrics, timing and plotting — guarantees all three legs see identical splits |
 | `scratch_nn.py` | The from-scratch framework: Conv2D/MaxPool2D/Dense/ReLU/Dropout with hand-derived gradients, Adam, and a finite-difference gradient checker |
 | `results/` | Per-notebook JSON plus `all_runs.csv` |
+| `results/models/` | Trained weights, one folder per notebook — committed, so the networks ship with the code |
+| `results/variant_cache/` | Trained weights for M1..M4 — gitignored, rebuilt by `python prefill_variants.py` |
 
 Run the notebooks in order; `04_compare.ipynb` reads the JSON the first three write.
 
@@ -190,6 +192,38 @@ See `pdf/08_lenet_mnist_report.pdf` and `pdf/09_lenet_cifar10_report.pdf` for th
 
     parts.append("""
 
+## Saved models
+
+Every notebook persists the networks it trains, not just the numbers they produced. Each leg is written in
+its own framework's native format under `results/models/<notebook>/`, beside a JSON sidecar recording the
+architecture, the parameter count, and the accuracy those exact weights scored:
+
+| Leg | Format | Reloads on its own? |
+|---|---|---|
+| Scratch (NumPy) | `.npz` — one array per layer parameter | no |
+| TensorFlow/Keras | `.keras` — graph and weights together | **yes** |
+| PyTorch | `.pt` — `state_dict` | no |
+
+```python
+import ass4_utils as U
+
+U.list_models()                                   # everything saved, from the sidecars
+U.list_models("06_mnist_lenet")                   # one notebook
+
+keras_model = U.load_model("lenet5_keras_subset", "06_mnist_lenet")       # standalone
+torch_model = U.load_model("lenet5_torch_subset", "06_mnist_lenet",
+                           model=LeNet5(C, N_CLASSES))                    # needs an instance
+```
+
+`.pt` and `.npz` hold weights only, so reloading them means rebuilding the architecture first and passing the
+fresh instance as `model=`. That is deliberate: `state_dict` is the portable half of a PyTorch model, while
+pickling the class ties the file to the notebook that defined it. `04_compare.ipynb` already followed this
+contract through `results/variant_cache/`; the other notebooks now do too.
+
+These weights are committed, so cloning the repo is enough to load any of the trained networks without
+retraining. The M1..M4 cache under `results/variant_cache/` stays gitignored — rebuild it with
+`python prefill_variants.py`.
+
 ## What the experiments show
 
 **The framework does not change the model.** Across three datasets and two model families, the three
@@ -216,7 +250,7 @@ notebooks 2 and 3. A CNN is a choice justified by a property of the input, not a
   stages for M1..M4), no data augmentation, no learning-rate schedule, no hyperparameter tuning. These are
   not competitive CIFAR-10 numbers and are not meant to be.
 - One seed per configuration. Notebook 04 measures the noise floor directly by re-running one model across
-  five seeds: the seed-only spread was 0.046 accuracy and the framework spread on the same subset was 0.043,
+  five seeds: the seed-only spread was 0.053 accuracy and the framework spread on the same subset was 0.043,
   so the frameworks fall inside the noise band. The M1..M4 gaps are larger, but that experiment has no
   repeated-seed band of its own.
 - The GPU in this machine thermally throttles at 96-98 C under sustained load. The M1..M4 runs therefore

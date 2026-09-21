@@ -1,0 +1,14 @@
+{
+  "name": "lenet5_scratch_subset",
+  "framework": "scratch",
+  "class": "Sequential",
+  "n_params": 62006,
+  "weights_file": "lenet5_scratch_subset.npz",
+  "self_contained": false,
+  "saved_at": "2026-09-21 20:51:59",
+  "architecture": "LeNet-5",
+  "dataset": "CIFAR-10 (5k subset)",
+  "epochs": 5,
+  "test_accuracy": 0.427,
+  "f1_macro": 0.42163755212285176
+}

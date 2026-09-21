@@ -1,0 +1,14 @@
+{
+  "name": "mlp_keras",
+  "framework": "keras",
+  "class": "Sequential",
+  "n_params": 31491,
+  "weights_file": "mlp_keras.keras",
+  "self_contained": true,
+  "saved_at": "2026-09-21 20:43:53",
+  "architecture": "MLP 179-128-64-3",
+  "dataset": "Diabetes 130-US hospitals",
+  "epochs": 15,
+  "test_accuracy": 0.6076890095755324,
+  "f1_macro": 0.3685920896608068
+}

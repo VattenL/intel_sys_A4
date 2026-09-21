@@ -1,0 +1,14 @@
+{
+  "name": "cnn_keras_subset",
+  "framework": "keras",
+  "class": "Sequential",
+  "n_params": 20490,
+  "weights_file": "cnn_keras_subset.keras",
+  "self_contained": true,
+  "saved_at": "2026-09-21 20:45:20",
+  "architecture": "CNN 2conv+fc",
+  "dataset": "MNIST (10k subset)",
+  "epochs": 5,
+  "test_accuracy": 0.9755,
+  "f1_macro": 0.9756283508491439
+}

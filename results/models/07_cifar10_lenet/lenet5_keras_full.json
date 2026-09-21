@@ -1,0 +1,14 @@
+{
+  "name": "lenet5_keras_full",
+  "framework": "keras",
+  "class": "Sequential",
+  "n_params": 62006,
+  "weights_file": "lenet5_keras_full.keras",
+  "self_contained": true,
+  "saved_at": "2026-09-21 20:51:59",
+  "architecture": "LeNet-5",
+  "dataset": "CIFAR-10 (full 50k)",
+  "epochs": 5,
+  "test_accuracy": 0.6032,
+  "f1_macro": 0.5984889390556191
+}

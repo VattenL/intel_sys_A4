@@ -1,0 +1,14 @@
+{
+  "name": "smallcnn_keras_full",
+  "framework": "keras",
+  "class": "Sequential",
+  "n_params": 545098,
+  "weights_file": "smallcnn_keras_full.keras",
+  "self_contained": true,
+  "saved_at": "2026-09-21 20:48:30",
+  "architecture": "SmallCNN",
+  "dataset": "CIFAR-10 (full 50k)",
+  "epochs": 5,
+  "test_accuracy": 0.7043,
+  "f1_macro": 0.6990173252000671
+}

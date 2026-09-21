@@ -1,0 +1,14 @@
+{
+  "name": "lenet5_keras_subset",
+  "framework": "keras",
+  "class": "Sequential",
+  "n_params": 62006,
+  "weights_file": "lenet5_keras_subset.keras",
+  "self_contained": true,
+  "saved_at": "2026-09-21 20:51:59",
+  "architecture": "LeNet-5",
+  "dataset": "CIFAR-10 (5k subset)",
+  "epochs": 5,
+  "test_accuracy": 0.4545,
+  "f1_macro": 0.4527927373648735
+}

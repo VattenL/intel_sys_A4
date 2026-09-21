@@ -1,0 +1,14 @@
+{
+  "name": "lenet5_scratch_subset",
+  "framework": "scratch",
+  "class": "Sequential",
+  "n_params": 61706,
+  "weights_file": "lenet5_scratch_subset.npz",
+  "self_contained": false,
+  "saved_at": "2026-09-21 20:50:18",
+  "architecture": "LeNet-5",
+  "dataset": "MNIST (10k subset)",
+  "epochs": 5,
+  "test_accuracy": 0.9775,
+  "f1_macro": 0.9771930169917982
+}

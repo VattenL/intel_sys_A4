@@ -1,0 +1,14 @@
+{
+  "name": "lenet5_keras_full",
+  "framework": "keras",
+  "class": "Sequential",
+  "n_params": 61706,
+  "weights_file": "lenet5_keras_full.keras",
+  "self_contained": true,
+  "saved_at": "2026-09-21 20:50:18",
+  "architecture": "LeNet-5",
+  "dataset": "MNIST (full 60k)",
+  "epochs": 5,
+  "test_accuracy": 0.9859,
+  "f1_macro": 0.9857769773254038
+}

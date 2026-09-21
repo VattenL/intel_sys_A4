@@ -323,25 +323,25 @@ không giấu gì.
 
 | Framework | Tham số | Accuracy | Macro-F1 | Train (s) | Phần cứng |
 |---|---:|---:|---:|---:|---|
-| Scratch (NumPy) | 61,706 | 97.75% | 0.9772 | 32.9 | CPU |
-| TensorFlow/Keras | 61,706 | 97.60% | 0.9762 | 6.6 | CPU |
-| PyTorch | 61,706 | 97.55% | 0.9754 | 4.2 | GPU |
+| PyTorch | 61,706 | 97.80% | 0.9780 | 3.4 | GPU |
+| Scratch (NumPy) | 61,706 | 97.75% | 0.9772 | 30.4 | CPU |
+| TensorFlow/Keras | 61,706 | 97.60% | 0.9762 | 5.9 | CPU |
 
 Ba framework ra **đúng 61,706 tham số** — con số khớp với tính tay ở mục 1.4.
 Đây là kiểm chứng mạnh nhất cho việc kiến trúc được dịch đúng sang cả ba nơi:
 ba hiện thực độc lập, cùng một con số.
 
-Chênh lệch accuracy giữa ba bản là **0.20 điểm** (97.55 → 97.75). Đó là nhiễu do
+Chênh lệch accuracy giữa ba bản là **0.20 điểm** (97.60 → 97.80). Đó là nhiễu do
 thứ tự khởi tạo và shuffle khác nhau, không phải bằng chứng bản nào tốt hơn.
 
 ## 4.2 Full-data (60k)
 
 | Framework | Accuracy | Macro-F1 | Train (s) |
 |---|---:|---:|---:|
-| PyTorch | 98.70% | 0.9868 | 23.0 |
-| TensorFlow/Keras | 98.59% | 0.9858 | 29.9 |
+| PyTorch | 98.94% | 0.9892 | 17.4 |
+| TensorFlow/Keras | 98.59% | 0.9858 | 25.4 |
 
-Gấp 6 lần dữ liệu đổi lấy khoảng **+1 điểm** accuracy (97.6 → 98.7).
+Gấp 6 lần dữ liệu đổi lấy khoảng **+1 điểm** accuracy (97.8 → 98.9).
 
 ---
 
@@ -356,11 +356,11 @@ vào một `Linear(1568 → 10)`. Tổng 20,490 tham số.
 |---|---|---:|---:|---:|
 | MNIST (10k subset) | Scratch (NumPy) | 98.10% | 97.75% | −0.35 |
 | MNIST (10k subset) | TensorFlow/Keras | 97.55% | 97.60% | **+0.05** |
-| MNIST (10k subset) | PyTorch | 98.35% | 97.55% | −0.80 |
+| MNIST (10k subset) | PyTorch | 98.35% | 97.80% | −0.55 |
 | MNIST (full 60k) | TensorFlow/Keras | 98.55% | 98.59% | **+0.04** |
-| MNIST (full 60k) | PyTorch | 98.74% | 98.70% | −0.04 |
+| MNIST (full 60k) | PyTorch | 98.75% | 98.94% | **+0.19** |
 
-**Chênh lệch trung bình: −0.22 điểm.**
+**Chênh lệch trung bình: −0.12 điểm.**
 
 ## 5.2 Đọc bảng này thế nào
 
@@ -370,10 +370,11 @@ vào một `Linear(1568 → 10)`. Tổng 20,490 tham số.
 kiến trúc gần như không còn là biến quyết định.**
 
 **2. Trên full-data, hai kiến trúc không phân biệt được.**
-Chênh 0.04 điểm ở cả hai framework — tức khoảng 4 ảnh trên 10,000. Con số đó nhỏ hơn
-dao động giữa các lần chạy. Kết luận trung thực là **hoà**, không phải "baseline thắng".
+LeNet-5 nhỉnh hơn ở cả hai framework, +0.04 và +0.19 điểm — tức 4 đến 19 ảnh trên
+10,000. Cả hai con số nhỏ hơn dao động giữa các lần chạy. Kết luận trung thực là
+**hoà**, không phải "LeNet thắng".
 
-**3. Chênh lệch lớn nhất (−0.80) nằm ở subset, không phải full-data.**
+**3. Chênh lệch lớn nhất (−0.55) nằm ở subset, không phải full-data.**
 Dữ liệu càng ít thì khác biệt kiến trúc càng lộ, và càng nhiều nhiễu. Đây là lý do
 không nên kết luận từ một dòng đơn lẻ trong bảng.
 
@@ -381,10 +382,10 @@ không nên kết luận từ một dòng đơn lẻ trong bảng.
 
 | | Tham số | Scratch train (s) |
 |---|---:|---:|
-| `CNN 2conv+fc` | 20,490 | 75.1 |
-| LeNet-5 | 61,706 | **32.9** |
+| `CNN 2conv+fc` | 20,490 | 36.2 |
+| LeNet-5 | 61,706 | **30.4** |
 
-**LeNet-5 có tham số gấp 3 nhưng huấn luyện nhanh hơn 2.28 lần.**
+**LeNet-5 có tham số gấp 3 nhưng vẫn huấn luyện nhanh hơn baseline.**
 
 Nghe mâu thuẫn, nhưng tính ra thì hợp lý. Đếm số phép nhân-cộng (MAC) của hai lớp conv:
 
@@ -402,7 +403,11 @@ LeNet-5:
 → LeNet-5 rẻ hơn 2.84 lần về tính toán conv
 ```
 
-Tỷ lệ 2.84× này khớp rất sát với tốc độ đo được 2.28×.
+Tỷ lệ MAC 2.84× là số học thuần tuý và không đổi giữa các lần chạy. Tốc độ đo được thì
+có: lần chạy này cho 1.19× (36.2s so với 30.4s), một lần chạy trước đó cho 2.28×. Bản
+NumPy chạy trên CPU dùng chung nên wall-clock của nó nhiễu nặng. Điều giữ nguyên qua mọi
+lần chạy là **chiều** của bất đẳng thức: mạng nhiều tham số gấp 3 vẫn là mạng huấn luyện
+nhanh hơn. Độ lớn chính xác của tỷ lệ thì không nên đọc kỹ.
 
 Nguyên nhân: **tham số của LeNet nằm ở lớp Dense, còn chi phí tính toán nằm ở lớp Conv.**
 Một trọng số Dense được dùng đúng một lần cho mỗi mẫu. Một trọng số Conv được dùng lại
@@ -417,10 +422,10 @@ nhưng dùng tới 16 và 32 kênh, nên khối lượng tính toán conv lớn 
 # 6. Kết luận
 
 **LeNet-5 hoạt động tốt trên MNIST — đúng như kỳ vọng, vì đây là bài toán nó được
-thiết kế cho.** 97.55–97.75% trên subset 10k, 98.70% trên full-data.
+thiết kế cho.** 97.60–97.80% trên subset 10k, 98.94% trên full-data.
 
 Nhưng nó **không tốt hơn** kiến trúc baseline tự đặt, dù nặng gấp 3 lần về tham số.
-Chênh lệch trung bình −0.22 điểm, và trên full-data thì hai bên không phân biệt được.
+Chênh lệch trung bình −0.12 điểm, và trên full-data thì hai bên không phân biệt được.
 
 Ba điều đáng mang đi:
 

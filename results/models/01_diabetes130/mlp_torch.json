@@ -1,0 +1,14 @@
+{
+  "name": "mlp_torch",
+  "framework": "torch",
+  "class": "DiabetesMLP",
+  "n_params": 31491,
+  "weights_file": "mlp_torch.pt",
+  "self_contained": false,
+  "saved_at": "2026-09-21 20:43:53",
+  "architecture": "MLP 179-128-64-3",
+  "dataset": "Diabetes 130-US hospitals",
+  "epochs": 15,
+  "test_accuracy": 0.6105473774474774,
+  "f1_macro": 0.3694382289752345
+}
