@@ -1,0 +1,922 @@
+{
+  "meta": {
+    "name": "CIFAR-10",
+    "shape": [
+      3,
+      32,
+      32
+    ],
+    "classes": [
+      "airplane",
+      "automobile",
+      "bird",
+      "cat",
+      "deer",
+      "dog",
+      "frog",
+      "horse",
+      "ship",
+      "truck"
+    ],
+    "kind": "image",
+    "channel_mean": [
+      0.49502167105674744,
+      0.4842333495616913,
+      0.4468945860862732
+    ],
+    "channel_std": [
+      0.24772511422634125,
+      0.24425248801708221,
+      0.2619442641735077
+    ]
+  },
+  "results": [
+    {
+      "framework": "Scratch (NumPy)",
+      "dataset": "CIFAR-10 (5k subset)",
+      "model": "LeNet-5",
+      "n_params": 62006,
+      "epochs": 5,
+      "train_seconds": 28.71,
+      "train_loss": 1.2525,
+      "test_accuracy": 0.427,
+      "precision_macro": 0.4314410838985747,
+      "recall_macro": 0.42941206457102743,
+      "f1_macro": 0.42163755212285176,
+      "history": {
+        "loss": [
+          2.045176347599754,
+          1.7183443730390524,
+          1.559788703918457,
+          1.3933875123156776,
+          1.2524660667286645
+        ],
+        "val_acc": [
+          0.312,
+          0.378,
+          0.416,
+          0.4275,
+          0.427
+        ],
+        "epoch_seconds": [
+          5.186152100000072,
+          4.8202228000000105,
+          4.893986800000221,
+          4.8719529999998485,
+          4.9251924000000145
+        ]
+      },
+      "confusion": [
+        [
+          115,
+          20,
+          9,
+          6,
+          7,
+          2,
+          3,
+          5,
+          35,
+          8
+        ],
+        [
+          9,
+          114,
+          4,
+          4,
+          7,
+          0,
+          1,
+          1,
+          26,
+          17
+        ],
+        [
+          14,
+          10,
+          50,
+          13,
+          39,
+          15,
+          11,
+          15,
+          7,
+          3
+        ],
+        [
+          4,
+          5,
+          23,
+          63,
+          45,
+          23,
+          20,
+          17,
+          10,
+          7
+        ],
+        [
+          12,
+          3,
+          21,
+          12,
+          87,
+          3,
+          30,
+          27,
+          5,
+          5
+        ],
+        [
+          4,
+          4,
+          25,
+          48,
+          36,
+          47,
+          9,
+          31,
+          9,
+          4
+        ],
+        [
+          4,
+          5,
+          13,
+          12,
+          39,
+          4,
+          112,
+          10,
+          2,
+          10
+        ],
+        [
+          3,
+          2,
+          12,
+          13,
+          32,
+          9,
+          11,
+          92,
+          7,
+          4
+        ],
+        [
+          39,
+          13,
+          6,
+          3,
+          9,
+          1,
+          2,
+          2,
+          112,
+          10
+        ],
+        [
+          9,
+          52,
+          3,
+          8,
+          7,
+          2,
+          13,
+          7,
+          35,
+          62
+        ]
+      ]
+    },
+    {
+      "framework": "TensorFlow/Keras",
+      "dataset": "CIFAR-10 (5k subset)",
+      "model": "LeNet-5",
+      "n_params": 62006,
+      "epochs": 5,
+      "train_seconds": 4.72,
+      "train_loss": 1.351,
+      "test_accuracy": 0.4545,
+      "precision_macro": 0.4601382768154851,
+      "recall_macro": 0.4549798250964307,
+      "f1_macro": 0.4527927373648735,
+      "history": {
+        "loss": [
+          2.0174858570098877,
+          1.7100212574005127,
+          1.5479215383529663,
+          1.4422764778137207,
+          1.3510409593582153
+        ],
+        "val_acc": [
+          0.3334999978542328,
+          0.4050000011920929,
+          0.421999990940094,
+          0.4390000104904175,
+          0.4544999897480011
+        ]
+      },
+      "confusion": [
+        [
+          116,
+          13,
+          8,
+          8,
+          5,
+          5,
+          4,
+          3,
+          38,
+          10
+        ],
+        [
+          5,
+          114,
+          0,
+          3,
+          0,
+          2,
+          3,
+          2,
+          23,
+          31
+        ],
+        [
+          16,
+          4,
+          55,
+          28,
+          30,
+          18,
+          9,
+          9,
+          6,
+          2
+        ],
+        [
+          7,
+          4,
+          11,
+          81,
+          19,
+          32,
+          26,
+          17,
+          7,
+          13
+        ],
+        [
+          11,
+          8,
+          12,
+          27,
+          67,
+          15,
+          38,
+          16,
+          5,
+          6
+        ],
+        [
+          1,
+          2,
+          14,
+          70,
+          12,
+          77,
+          16,
+          11,
+          6,
+          8
+        ],
+        [
+          2,
+          12,
+          5,
+          20,
+          26,
+          5,
+          124,
+          4,
+          3,
+          10
+        ],
+        [
+          3,
+          3,
+          4,
+          26,
+          8,
+          22,
+          12,
+          83,
+          8,
+          16
+        ],
+        [
+          37,
+          19,
+          5,
+          6,
+          0,
+          1,
+          1,
+          4,
+          108,
+          16
+        ],
+        [
+          8,
+          54,
+          2,
+          8,
+          1,
+          1,
+          15,
+          4,
+          21,
+          84
+        ]
+      ]
+    },
+    {
+      "framework": "PyTorch",
+      "dataset": "CIFAR-10 (5k subset)",
+      "model": "LeNet-5",
+      "n_params": 62006,
+      "epochs": 5,
+      "train_seconds": 1.54,
+      "train_loss": 1.4689,
+      "test_accuracy": 0.446,
+      "precision_macro": 0.45879790175117396,
+      "recall_macro": 0.44800762816170125,
+      "f1_macro": 0.436340125450724,
+      "history": {
+        "loss": [
+          2.0728245641611798,
+          1.7757851428623441,
+          1.6541596590718137,
+          1.54038437408737,
+          1.4689192107961149
+        ],
+        "val_acc": [
+          0.3115,
+          0.345,
+          0.404,
+          0.414,
+          0.446
+        ]
+      },
+      "confusion": [
+        [
+          75,
+          21,
+          19,
+          5,
+          2,
+          6,
+          9,
+          6,
+          57,
+          10
+        ],
+        [
+          3,
+          109,
+          4,
+          4,
+          0,
+          4,
+          9,
+          0,
+          23,
+          27
+        ],
+        [
+          4,
+          4,
+          69,
+          15,
+          21,
+          20,
+          26,
+          5,
+          8,
+          5
+        ],
+        [
+          5,
+          5,
+          27,
+          45,
+          13,
+          51,
+          46,
+          12,
+          5,
+          8
+        ],
+        [
+          3,
+          10,
+          31,
+          17,
+          53,
+          5,
+          62,
+          14,
+          7,
+          3
+        ],
+        [
+          1,
+          2,
+          21,
+          42,
+          10,
+          93,
+          27,
+          9,
+          5,
+          7
+        ],
+        [
+          1,
+          7,
+          6,
+          5,
+          11,
+          7,
+          167,
+          2,
+          0,
+          5
+        ],
+        [
+          0,
+          5,
+          12,
+          12,
+          10,
+          34,
+          17,
+          82,
+          2,
+          11
+        ],
+        [
+          15,
+          21,
+          6,
+          3,
+          3,
+          8,
+          4,
+          2,
+          126,
+          9
+        ],
+        [
+          1,
+          51,
+          4,
+          11,
+          2,
+          2,
+          18,
+          5,
+          31,
+          73
+        ]
+      ]
+    }
+  ],
+  "full_results": [
+    {
+      "framework": "PyTorch",
+      "dataset": "CIFAR-10 (full 50k)",
+      "model": "LeNet-5",
+      "n_params": 62006,
+      "epochs": 5,
+      "train_seconds": 30.88,
+      "train_loss": 1.0453,
+      "test_accuracy": 0.6075,
+      "precision_macro": 0.6149705036678004,
+      "recall_macro": 0.6074999999999999,
+      "f1_macro": 0.6069665390305614,
+      "history": {
+        "loss": [
+          1.6023605592415462,
+          1.312690841572364,
+          1.1895033254495362,
+          1.107510785236383,
+          1.0453130897811003
+        ],
+        "val_acc": [
+          0.4987,
+          0.5559,
+          0.5833,
+          0.5904,
+          0.6075
+        ]
+      },
+      "confusion": [
+        [
+          677,
+          28,
+          66,
+          26,
+          26,
+          7,
+          16,
+          2,
+          117,
+          35
+        ],
+        [
+          40,
+          691,
+          10,
+          12,
+          5,
+          3,
+          19,
+          5,
+          28,
+          187
+        ],
+        [
+          70,
+          12,
+          464,
+          121,
+          114,
+          45,
+          103,
+          27,
+          27,
+          17
+        ],
+        [
+          26,
+          12,
+          76,
+          539,
+          69,
+          98,
+          107,
+          29,
+          12,
+          32
+        ],
+        [
+          27,
+          8,
+          110,
+          94,
+          502,
+          30,
+          121,
+          85,
+          17,
+          6
+        ],
+        [
+          16,
+          5,
+          99,
+          322,
+          56,
+          388,
+          36,
+          61,
+          6,
+          11
+        ],
+        [
+          6,
+          3,
+          64,
+          81,
+          44,
+          11,
+          766,
+          7,
+          6,
+          12
+        ],
+        [
+          12,
+          2,
+          45,
+          96,
+          93,
+          73,
+          10,
+          618,
+          5,
+          46
+        ],
+        [
+          82,
+          55,
+          24,
+          28,
+          10,
+          6,
+          8,
+          7,
+          740,
+          40
+        ],
+        [
+          44,
+          120,
+          9,
+          41,
+          10,
+          8,
+          21,
+          14,
+          43,
+          690
+        ]
+      ]
+    },
+    {
+      "framework": "TensorFlow/Keras",
+      "dataset": "CIFAR-10 (full 50k)",
+      "model": "LeNet-5",
+      "n_params": 62006,
+      "epochs": 5,
+      "train_seconds": 29.27,
+      "train_loss": 1.0131,
+      "test_accuracy": 0.6032,
+      "precision_macro": 0.6017549254663849,
+      "recall_macro": 0.6032,
+      "f1_macro": 0.5984889390556191,
+      "history": {
+        "loss": [
+          1.560328722000122,
+          1.2764173746109009,
+          1.1620895862579346,
+          1.0788226127624512,
+          1.0131441354751587
+        ],
+        "val_acc": [
+          0.5131999850273132,
+          0.564300000667572,
+          0.5806999802589417,
+          0.5946999788284302,
+          0.6032000184059143
+        ]
+      },
+      "confusion": [
+        [
+          705,
+          34,
+          58,
+          7,
+          35,
+          5,
+          8,
+          10,
+          105,
+          33
+        ],
+        [
+          47,
+          755,
+          8,
+          3,
+          7,
+          6,
+          6,
+          0,
+          49,
+          119
+        ],
+        [
+          109,
+          24,
+          499,
+          68,
+          119,
+          38,
+          59,
+          41,
+          26,
+          17
+        ],
+        [
+          33,
+          28,
+          89,
+          401,
+          99,
+          120,
+          53,
+          73,
+          46,
+          58
+        ],
+        [
+          43,
+          14,
+          93,
+          62,
+          550,
+          16,
+          59,
+          125,
+          20,
+          18
+        ],
+        [
+          23,
+          13,
+          86,
+          197,
+          78,
+          391,
+          25,
+          127,
+          26,
+          34
+        ],
+        [
+          19,
+          30,
+          62,
+          80,
+          70,
+          9,
+          664,
+          17,
+          20,
+          29
+        ],
+        [
+          24,
+          7,
+          41,
+          60,
+          65,
+          41,
+          10,
+          673,
+          12,
+          67
+        ],
+        [
+          116,
+          65,
+          8,
+          8,
+          11,
+          5,
+          3,
+          6,
+          747,
+          31
+        ],
+        [
+          67,
+          154,
+          8,
+          14,
+          7,
+          4,
+          11,
+          16,
+          72,
+          647
+        ]
+      ]
+    }
+  ],
+  "component_table": [
+    {
+      "Component": "Data loading",
+      "Scratch": "ass4_utils -> NumPy (N,C,H,W)",
+      "TensorFlow/Keras": "same arrays, transposed to (N,H,W,C)",
+      "PyTorch": "same arrays"
+    },
+    {
+      "Component": "Preprocessing",
+      "Scratch": "ass4_utils (shared)",
+      "TensorFlow/Keras": "shared",
+      "PyTorch": "shared"
+    },
+    {
+      "Component": "Model definition",
+      "Scratch": "S.Sequential([...])",
+      "TensorFlow/Keras": "keras.Sequential([...])",
+      "PyTorch": "nn.Module (LeNet5)"
+    },
+    {
+      "Component": "C1 / C3 conv",
+      "Scratch": "S.Conv2D(k=5) im2col+matmul",
+      "TensorFlow/Keras": "keras.layers.Conv2D(5)",
+      "PyTorch": "nn.Conv2d(5)"
+    },
+    {
+      "Component": "Activation",
+      "Scratch": "S.ReLU (mask multiply)",
+      "TensorFlow/Keras": "activation='relu'",
+      "PyTorch": "nn.ReLU"
+    },
+    {
+      "Component": "S2 / S4 pooling",
+      "Scratch": "S.MaxPool2D (argmax routing)",
+      "TensorFlow/Keras": "keras.layers.MaxPooling2D",
+      "PyTorch": "nn.MaxPool2d"
+    },
+    {
+      "Component": "Flatten",
+      "Scratch": "S.Flatten (reshape)",
+      "TensorFlow/Keras": "keras.layers.Flatten",
+      "PyTorch": "nn.Flatten"
+    },
+    {
+      "Component": "F5 / F6 / output",
+      "Scratch": "S.Dense (x@W+b)",
+      "TensorFlow/Keras": "keras.layers.Dense",
+      "PyTorch": "nn.Linear"
+    },
+    {
+      "Component": "Loss",
+      "Scratch": "S.SoftmaxCrossEntropy",
+      "TensorFlow/Keras": "SparseCategoricalCrossentropy",
+      "PyTorch": "nn.CrossEntropyLoss"
+    },
+    {
+      "Component": "Gradient",
+      "Scratch": "hand-derived backward + col2im",
+      "TensorFlow/Keras": "automatic (GradientTape)",
+      "PyTorch": "automatic (autograd)"
+    },
+    {
+      "Component": "Optimizer",
+      "Scratch": "S.Adam (written out)",
+      "TensorFlow/Keras": "keras.optimizers.Adam",
+      "PyTorch": "torch.optim.Adam"
+    },
+    {
+      "Component": "Training loop",
+      "Scratch": "explicit for-loop",
+      "TensorFlow/Keras": "model.fit()",
+      "PyTorch": "explicit for-loop"
+    },
+    {
+      "Component": "Evaluation",
+      "Scratch": "predict_classes + sklearn",
+      "TensorFlow/Keras": "predict + sklearn",
+      "PyTorch": "forward + sklearn"
+    },
+    {
+      "Component": "Hardware",
+      "Scratch": "CPU (NumPy)",
+      "TensorFlow/Keras": "CPU (no GPU TF on Windows)",
+      "PyTorch": "GPU (cuDNN)"
+    }
+  ],
+  "baseline_comparison": [
+    {
+      "dataset": "CIFAR-10 (5k subset)",
+      "framework": "PyTorch",
+      "LeNet-5": 0.446,
+      "SmallCNN": 0.531,
+      "delta (LeNet - baseline)": -0.08500000000000002
+    },
+    {
+      "dataset": "CIFAR-10 (5k subset)",
+      "framework": "Scratch (NumPy)",
+      "LeNet-5": 0.427,
+      "SmallCNN": 0.5055,
+      "delta (LeNet - baseline)": -0.07849999999999996
+    },
+    {
+      "dataset": "CIFAR-10 (5k subset)",
+      "framework": "TensorFlow/Keras",
+      "LeNet-5": 0.4545,
+      "SmallCNN": 0.5485,
+      "delta (LeNet - baseline)": -0.09399999999999997
+    },
+    {
+      "dataset": "CIFAR-10 (full 50k)",
+      "framework": "PyTorch",
+      "LeNet-5": 0.6075,
+      "SmallCNN": 0.719,
+      "delta (LeNet - baseline)": -0.11149999999999993
+    },
+    {
+      "dataset": "CIFAR-10 (full 50k)",
+      "framework": "TensorFlow/Keras",
+      "LeNet-5": 0.6032,
+      "SmallCNN": 0.7043,
+      "delta (LeNet - baseline)": -0.10110000000000008
+    }
+  ]
+}

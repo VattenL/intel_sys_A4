@@ -11,6 +11,8 @@ across three datasets, followed by an architecture-evolution experiment.
 | `02_mnist.ipynb` | MNIST (1x28x28) — CNN in all three frameworks |
 | `03_cifar10.ipynb` | CIFAR-10 (3x32x32) — CNN in all three frameworks |
 | `04_compare.ipynb` | Cross-dataset comparison, slide-28 component table, and the M1..M4 improved-model experiment |
+| `06_mnist_lenet.ipynb` | MNIST again with **LeNet-5** (LeCun et al., 1998), all three frameworks — parallel run, `02` untouched |
+| `07_cifar10_lenet.ipynb` | CIFAR-10 again with the same LeNet-5, all three frameworks — `03` untouched |
 | `ass4_utils.py` | Shared data loading, metrics, timing and plotting — guarantees all three legs see identical splits |
 | `scratch_nn.py` | The from-scratch framework: Conv2D/MaxPool2D/Dense/ReLU/Dropout with hand-derived gradients, Adam, and a finite-difference gradient checker |
 | `results/` | Per-notebook JSON plus `all_runs.csv` |
@@ -92,6 +94,40 @@ A mechanism helps when the model actually has the limitation it targets, and cos
 Caveats: one seed, ten epochs, no tuning, and narrowed 16/32/64 stages — see the notebook for the full
 reasoning and the SE-gate analysis that checks whether the attention block was inert or merely unhelpful.
 
+### LeNet-5 (LeCun et al., 1998)
+
+The same classic architecture applied to both image datasets, run alongside the original notebooks
+rather than replacing them. Topology is LeCun's — 6 then 16 feature maps, 5x5 kernels, a 120 -> 84 -> 10
+head — modernized with ReLU and max pooling in place of tanh and average pooling, which is what
+`scratch_nn.py` provides and what modern implementations use.
+
+#### MNIST — LeNet-5
+
+| Framework | Dataset | Params | Epochs | Train (s) | Accuracy | Macro F1 |
+|---|---|---|---|---|---|---|
+| Scratch (NumPy) | MNIST (10k subset) | 61,706 | 5 | 32.9 | 0.9775 | 0.9772 |
+| TensorFlow/Keras | MNIST (10k subset) | 61,706 | 5 | 6.6 | 0.9760 | 0.9762 |
+| PyTorch | MNIST (10k subset) | 61,706 | 5 | 4.2 | 0.9755 | 0.9754 |
+| PyTorch | MNIST (full 60k) | 61,706 | 5 | 23.0 | 0.9870 | 0.9868 |
+| TensorFlow/Keras | MNIST (full 60k) | 61,706 | 5 | 29.9 | 0.9859 | 0.9858 |
+
+#### CIFAR-10 — LeNet-5
+
+| Framework | Dataset | Params | Epochs | Train (s) | Accuracy | Macro F1 |
+|---|---|---|---|---|---|---|
+| Scratch (NumPy) | CIFAR-10 (5k subset) | 62,006 | 5 | 28.7 | 0.4270 | 0.4216 |
+| TensorFlow/Keras | CIFAR-10 (5k subset) | 62,006 | 5 | 4.7 | 0.4545 | 0.4528 |
+| PyTorch | CIFAR-10 (5k subset) | 62,006 | 5 | 1.5 | 0.4460 | 0.4363 |
+| PyTorch | CIFAR-10 (full 50k) | 62,006 | 5 | 30.9 | 0.6075 | 0.6070 |
+| TensorFlow/Keras | CIFAR-10 (full 50k) | 62,006 | 5 | 29.3 | 0.6032 | 0.5985 |
+
+One architecture, two datasets of the same spatial size, opposite outcomes. MNIST is the problem
+LeNet-5 was designed for and it holds its own there. CIFAR-10 is 32x32 colour photographs, and the same
+~62k parameters — under 3k of them in the convolutions — are not enough visual vocabulary for ten object
+classes. Capacity has to match difficulty.
+
+See `pdf/08_lenet_mnist_report.pdf` and `pdf/09_lenet_cifar10_report.pdf` for the full analysis.
+
 
 ## Parameter counts
 
@@ -100,6 +136,8 @@ Computed by hand from the tutorial's section 43 formulas before building anythin
 - **Diabetes**: 31,491 parameters — all three frameworks agree
 - **MNIST**: 20,490 parameters — all three frameworks agree
 - **CIFAR-10**: 545,098 parameters — all three frameworks agree
+- **MNIST (LeNet-5)**: 61,706 parameters — all three frameworks agree
+- **CIFAR-10 (LeNet-5)**: 62,006 parameters — all three frameworks agree
 
 
 ## What the experiments show

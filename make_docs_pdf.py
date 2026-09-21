@@ -1,7 +1,11 @@
-"""Render theory_notes.md to pdf/05_deep_learning_cnn.pdf.
+"""Render the hand-written Markdown documents to pdf/.
+
+Notebook PDFs come from make_report.py; this script covers the prose documents
+that are not notebooks.
 
 Usage:
-    python make_theory_pdf.py
+    python make_docs_pdf.py                 # all documents
+    python make_docs_pdf.py lenet_mnist     # only those whose name matches
 """
 
 from __future__ import annotations
@@ -12,10 +16,17 @@ import sys
 import markdown
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SRC = os.path.join(HERE, "theory_notes.md")
 PDF_DIR = os.path.join(HERE, "pdf")
 HTML_DIR = os.path.join(HERE, "_html")
-NAME = "05_deep_learning_cnn"
+
+# (markdown source, output basename, footer caption). Footer text is ASCII-only:
+# Chromium renders the header/footer templates with its own font stack, which has
+# no Vietnamese coverage, so accented characters come out as tofu there.
+DOCS = [
+    ("theory_notes.md",         "05_deep_learning_cnn",     "Deep Learning va CNN"),
+    ("lenet_mnist_report.md",   "08_lenet_mnist_report",    "LeNet-5 tren MNIST"),
+    ("lenet_cifar10_report.md", "09_lenet_cifar10_report",  "LeNet-5 tren CIFAR-10"),
+]
 
 # Font choice is not cosmetic here: Charter/Georgia lack the Vietnamese Extended
 # block (U+1EA0-U+1EF9), so Chromium falls back per-glyph and splits the diacritics
@@ -109,65 +120,78 @@ li { margin: 3px 0; }
 strong { color: #0b3d62; }
 """
 
+MD_EXTENSIONS = ["tables", "fenced_code", "sane_lists", "attr_list"]
 
-def build_html() -> str:
-    if not os.path.exists(SRC):
-        sys.exit(f"missing source: {SRC}")
 
-    with open(SRC, encoding="utf-8") as f:
-        text = f.read()
-
-    body = markdown.markdown(
-        text,
-        extensions=["tables", "fenced_code", "sane_lists", "attr_list"],
-    )
+def build_html(src: str, name: str) -> str:
+    with open(os.path.join(HERE, src), encoding="utf-8") as f:
+        body = markdown.markdown(f.read(), extensions=MD_EXTENSIONS)
 
     os.makedirs(HTML_DIR, exist_ok=True)
-    html_path = os.path.join(HTML_DIR, f"{NAME}.html")
+    html_path = os.path.join(HTML_DIR, f"{name}.html")
     with open(html_path, "w", encoding="utf-8") as f:
         f.write(
             "<!doctype html><html lang='vi'><head><meta charset='utf-8'>"
-            f"<title>{NAME}</title><style>{CSS}</style></head>"
+            f"<title>{name}</title><style>{CSS}</style></head>"
             f"<body>{body}</body></html>"
         )
     return html_path
 
 
-def export_pdf(html_path: str) -> str:
+def footer(caption: str) -> str:
+    return (
+        "<div style='width:100%;font-size:8px;color:#888;"
+        "padding:0 14mm;font-family:sans-serif;'>"
+        f"<span style='float:left'>Assignment 4 &mdash; {caption}</span>"
+        "<span style='float:right'>"
+        "<span class='pageNumber'></span>/<span class='totalPages'></span>"
+        "</span></div>"
+    )
+
+
+def export(docs) -> None:
     from playwright.sync_api import sync_playwright
 
     os.makedirs(PDF_DIR, exist_ok=True)
-    pdf_path = os.path.join(PDF_DIR, f"{NAME}.pdf")
 
+    # One browser for every document rather than one launch each - Chromium
+    # startup dominates the runtime of this script.
     with sync_playwright() as pw:
         browser = pw.chromium.launch()
-        page = browser.new_page()
-        page.goto("file:///" + html_path.replace("\\", "/"),
-                  wait_until="networkidle", timeout=120_000)
-        page.pdf(
-            path=pdf_path,
-            format="A4",
-            print_background=True,
-            margin={"top": "14mm", "bottom": "14mm",
-                    "left": "12mm", "right": "12mm"},
-            display_header_footer=True,
-            header_template="<div></div>",
-            footer_template=(
-                "<div style='width:100%;font-size:8px;color:#888;"
-                "padding:0 14mm;font-family:sans-serif;'>"
-                "<span style='float:left'>Assignment 4 &mdash; Deep Learning va CNN</span>"
-                "<span style='float:right'>"
-                "<span class='pageNumber'></span>/<span class='totalPages'></span>"
-                "</span></div>"
-            ),
-        )
+        for src, name, caption in docs:
+            html = build_html(src, name)
+            pdf_path = os.path.join(PDF_DIR, f"{name}.pdf")
+
+            page = browser.new_page()
+            page.goto("file:///" + html.replace("\\", "/"),
+                      wait_until="networkidle", timeout=120_000)
+            page.pdf(
+                path=pdf_path,
+                format="A4",
+                print_background=True,
+                margin={"top": "14mm", "bottom": "14mm",
+                        "left": "12mm", "right": "12mm"},
+                display_header_footer=True,
+                header_template="<div></div>",
+                footer_template=footer(caption),
+            )
+            page.close()
+
+            size = os.path.getsize(pdf_path) / 1024
+            print(f"  {src:<26} -> pdf/{name}.pdf  ({size:,.1f} KB)")
         browser.close()
-    return pdf_path
 
 
 if __name__ == "__main__":
-    html = build_html()
-    print(f"html  -> {os.path.relpath(html, HERE)}")
-    pdf = export_pdf(html)
-    size = os.path.getsize(pdf) / 1024
-    print(f"pdf   -> {os.path.relpath(pdf, HERE)}  ({size:,.1f} KB)")
+    wanted = sys.argv[1:]
+    docs = [d for d in DOCS if not wanted or any(w in d[0] or w in d[1] for w in wanted)]
+
+    missing = [d for d in docs if not os.path.exists(os.path.join(HERE, d[0]))]
+    for src, name, _ in missing:
+        print(f"  skip {src} (not written yet)")
+    docs = [d for d in docs if d not in missing]
+
+    if not docs:
+        sys.exit("nothing to render")
+
+    export(docs)

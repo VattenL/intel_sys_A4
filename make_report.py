@@ -21,6 +21,8 @@ NOTEBOOKS = [
     ("02_mnist", "MNIST (image, CNN)"),
     ("03_cifar10", "CIFAR-10 (image, CNN)"),
     ("04_compare", "Comparison + improved CNN models"),
+    ("06_mnist_lenet", "MNIST (image, LeNet-5)"),
+    ("07_cifar10_lenet", "CIFAR-10 (image, LeNet-5)"),
 ]
 
 
@@ -58,6 +60,7 @@ def _table(rows, cols, headers):
 def build_readme() -> str:
     d1, d2, d3 = _load("01_diabetes130.json"), _load("02_mnist.json"), _load("03_cifar10.json")
     d4 = _load("04_variants.json")
+    d6, d7 = _load("06_mnist_lenet.json"), _load("07_cifar10_lenet.json")
 
     parts = []
     parts.append("""# Assignment 4 — Comparing CNN Implementations
@@ -73,6 +76,8 @@ across three datasets, followed by an architecture-evolution experiment.
 | `02_mnist.ipynb` | MNIST (1x28x28) — CNN in all three frameworks |
 | `03_cifar10.ipynb` | CIFAR-10 (3x32x32) — CNN in all three frameworks |
 | `04_compare.ipynb` | Cross-dataset comparison, slide-28 component table, and the M1..M4 improved-model experiment |
+| `06_mnist_lenet.ipynb` | MNIST again with **LeNet-5** (LeCun et al., 1998), all three frameworks — parallel run, `02` untouched |
+| `07_cifar10_lenet.ipynb` | CIFAR-10 again with the same LeNet-5, all three frameworks — `03` untouched |
 | `ass4_utils.py` | Shared data loading, metrics, timing and plotting — guarantees all three legs see identical splits |
 | `scratch_nn.py` | The from-scratch framework: Conv2D/MaxPool2D/Dense/ReLU/Dropout with hand-derived gradients, Adam, and a finite-difference gradient checker |
 | `results/` | Per-notebook JSON plus `all_runs.csv` |
@@ -141,9 +146,37 @@ Caveats: one seed, ten epochs, no tuning, and narrowed 16/32/64 stages — see t
 reasoning and the SE-gate analysis that checks whether the attention block was inert or merely unhelpful.
 """)
 
+    if d6 or d7:
+        parts.append("""### LeNet-5 (LeCun et al., 1998)
+
+The same classic architecture applied to both image datasets, run alongside the original notebooks
+rather than replacing them. Topology is LeCun's — 6 then 16 feature maps, 5x5 kernels, a 120 -> 84 -> 10
+head — modernized with ReLU and max pooling in place of tanh and average pooling, which is what
+`scratch_nn.py` provides and what modern implementations use.
+""")
+        for payload, title in ((d6, "MNIST — LeNet-5"), (d7, "CIFAR-10 — LeNet-5")):
+            if not payload:
+                continue
+            parts.append(f"#### {title}\n")
+            parts.append(_table(
+                _rows(payload),
+                ["framework", "dataset", "n_params", "epochs", "train_seconds",
+                 "test_accuracy", "f1_macro"],
+                ["Framework", "Dataset", "Params", "Epochs", "Train (s)", "Accuracy", "Macro F1"],
+            ))
+            parts.append("")
+        parts.append("""One architecture, two datasets of the same spatial size, opposite outcomes. MNIST is the problem
+LeNet-5 was designed for and it holds its own there. CIFAR-10 is 32x32 colour photographs, and the same
+~62k parameters — under 3k of them in the convolutions — are not enough visual vocabulary for ten object
+classes. Capacity has to match difficulty.
+
+See `pdf/08_lenet_mnist_report.pdf` and `pdf/09_lenet_cifar10_report.pdf` for the full analysis.
+""")
+
     # ---- parameter agreement ----
     agree = []
-    for payload, name in ((d1, "Diabetes"), (d2, "MNIST"), (d3, "CIFAR-10")):
+    for payload, name in ((d1, "Diabetes"), (d2, "MNIST"), (d3, "CIFAR-10"),
+                          (d6, "MNIST (LeNet-5)"), (d7, "CIFAR-10 (LeNet-5)")):
         if not payload:
             continue
         counts = {r["n_params"] for r in _rows(payload)}

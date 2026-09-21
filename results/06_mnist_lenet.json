@@ -1,0 +1,918 @@
+{
+  "meta": {
+    "name": "MNIST",
+    "shape": [
+      1,
+      28,
+      28
+    ],
+    "classes": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9"
+    ],
+    "kind": "image",
+    "channel_mean": [
+      0.1306927651166916
+    ],
+    "channel_std": [
+      0.3081682622432709
+    ]
+  },
+  "results": [
+    {
+      "framework": "Scratch (NumPy)",
+      "dataset": "MNIST (10k subset)",
+      "model": "LeNet-5",
+      "n_params": 61706,
+      "epochs": 5,
+      "train_seconds": 32.85,
+      "train_loss": 0.0498,
+      "test_accuracy": 0.9775,
+      "precision_macro": 0.9774450719065388,
+      "recall_macro": 0.9772551208934417,
+      "f1_macro": 0.9771930169917982,
+      "history": {
+        "loss": [
+          0.5565574994892072,
+          0.16815102892886302,
+          0.10478640769483746,
+          0.06901284794257895,
+          0.04982141854099122
+        ],
+        "val_acc": [
+          0.946,
+          0.9675,
+          0.9645,
+          0.9755,
+          0.9775
+        ],
+        "epoch_seconds": [
+          5.237835800000084,
+          6.516357700000299,
+          6.22113520000039,
+          6.22021229999973,
+          6.070045400000254
+        ]
+      },
+      "confusion": [
+        [
+          195,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          213,
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          2,
+          0
+        ],
+        [
+          1,
+          1,
+          205,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          208,
+          0,
+          2,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          1,
+          1,
+          175,
+          0,
+          0,
+          1,
+          0,
+          5
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          197,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          184,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          1,
+          0,
+          0,
+          0,
+          209,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          2,
+          0,
+          0,
+          3,
+          2,
+          0,
+          198,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          1,
+          2,
+          2,
+          171
+        ]
+      ]
+    },
+    {
+      "framework": "TensorFlow/Keras",
+      "dataset": "MNIST (10k subset)",
+      "model": "LeNet-5",
+      "n_params": 61706,
+      "epochs": 5,
+      "train_seconds": 6.6,
+      "train_loss": 0.0526,
+      "test_accuracy": 0.976,
+      "precision_macro": 0.9770744851880903,
+      "recall_macro": 0.9759529529652097,
+      "f1_macro": 0.9762009967216569,
+      "history": {
+        "loss": [
+          0.5513421893119812,
+          0.13194704055786133,
+          0.08360984176397324,
+          0.0682840347290039,
+          0.05260935053229332
+        ],
+        "val_acc": [
+          0.9514999985694885,
+          0.9674999713897705,
+          0.972000002861023,
+          0.9605000019073486,
+          0.9760000109672546
+        ]
+      },
+      "confusion": [
+        [
+          194,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          0
+        ],
+        [
+          0,
+          215,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          2,
+          195,
+          8,
+          0,
+          0,
+          0,
+          0,
+          4,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          212,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          178,
+          0,
+          0,
+          1,
+          1,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          5,
+          0,
+          191,
+          1,
+          0,
+          1,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          3,
+          1,
+          180,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          3,
+          0,
+          0,
+          0,
+          206,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          1,
+          205,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          176
+        ]
+      ]
+    },
+    {
+      "framework": "PyTorch",
+      "dataset": "MNIST (10k subset)",
+      "model": "LeNet-5",
+      "n_params": 61706,
+      "epochs": 5,
+      "train_seconds": 4.15,
+      "train_loss": 0.0746,
+      "test_accuracy": 0.9755,
+      "precision_macro": 0.9755911260739257,
+      "recall_macro": 0.9756677438980178,
+      "f1_macro": 0.9754270053385019,
+      "history": {
+        "loss": [
+          0.7040492984329819,
+          0.2054708325274431,
+          0.12663843350449375,
+          0.09786775357024685,
+          0.07461610061834288
+        ],
+        "val_acc": [
+          0.918,
+          0.9505,
+          0.971,
+          0.9775,
+          0.9755
+        ]
+      },
+      "confusion": [
+        [
+          190,
+          0,
+          0,
+          0,
+          1,
+          0,
+          2,
+          1,
+          2,
+          1
+        ],
+        [
+          0,
+          215,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          1,
+          196,
+          0,
+          0,
+          0,
+          0,
+          4,
+          8,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          206,
+          0,
+          2,
+          0,
+          2,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          180,
+          0,
+          0,
+          1,
+          0,
+          3
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          194,
+          1,
+          0,
+          0,
+          2
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          1,
+          2,
+          181,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          209,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          204,
+          2
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          176
+        ]
+      ]
+    }
+  ],
+  "full_results": [
+    {
+      "framework": "PyTorch",
+      "dataset": "MNIST (full 60k)",
+      "model": "LeNet-5",
+      "n_params": 61706,
+      "epochs": 5,
+      "train_seconds": 22.99,
+      "train_loss": 0.0315,
+      "test_accuracy": 0.987,
+      "precision_macro": 0.9872355690150514,
+      "recall_macro": 0.9865999746756108,
+      "f1_macro": 0.9868154507496341,
+      "history": {
+        "loss": [
+          0.22051887796707212,
+          0.06458573431140983,
+          0.046437157616480935,
+          0.03795565893447378,
+          0.03154492790547402
+        ],
+        "val_acc": [
+          0.9763,
+          0.9864,
+          0.9868,
+          0.9887,
+          0.987
+        ]
+      },
+      "confusion": [
+        [
+          973,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          2,
+          3,
+          0
+        ],
+        [
+          1,
+          1130,
+          0,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0
+        ],
+        [
+          1,
+          2,
+          1008,
+          6,
+          1,
+          0,
+          0,
+          11,
+          2,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          1009,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          972,
+          0,
+          0,
+          1,
+          1,
+          8
+        ],
+        [
+          1,
+          0,
+          0,
+          25,
+          0,
+          857,
+          1,
+          0,
+          3,
+          5
+        ],
+        [
+          5,
+          1,
+          0,
+          1,
+          5,
+          4,
+          941,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          3,
+          0,
+          0,
+          0,
+          1020,
+          1,
+          4
+        ],
+        [
+          0,
+          0,
+          1,
+          6,
+          0,
+          0,
+          1,
+          1,
+          961,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          5,
+          3,
+          1,
+          0,
+          1,
+          0,
+          999
+        ]
+      ]
+    },
+    {
+      "framework": "TensorFlow/Keras",
+      "dataset": "MNIST (full 60k)",
+      "model": "LeNet-5",
+      "n_params": 61706,
+      "epochs": 5,
+      "train_seconds": 29.94,
+      "train_loss": 0.0251,
+      "test_accuracy": 0.9859,
+      "precision_macro": 0.98581796568083,
+      "recall_macro": 0.9858569530221027,
+      "f1_macro": 0.9857769773254038,
+      "history": {
+        "loss": [
+          0.17650862038135529,
+          0.05605173856019974,
+          0.03842298686504364,
+          0.030218157917261124,
+          0.025050336495041847
+        ],
+        "val_acc": [
+          0.9825999736785889,
+          0.9843000173568726,
+          0.984499990940094,
+          0.9839000105857849,
+          0.9858999848365784
+        ]
+      },
+      "confusion": [
+        [
+          962,
+          0,
+          2,
+          0,
+          0,
+          1,
+          13,
+          1,
+          1,
+          0
+        ],
+        [
+          4,
+          1117,
+          6,
+          0,
+          0,
+          1,
+          4,
+          1,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          1026,
+          1,
+          0,
+          0,
+          0,
+          5,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1006,
+          0,
+          2,
+          0,
+          1,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          3,
+          0,
+          959,
+          0,
+          6,
+          1,
+          4,
+          9
+        ],
+        [
+          1,
+          0,
+          0,
+          7,
+          0,
+          881,
+          2,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          2,
+          954,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          1,
+          2,
+          3,
+          0,
+          0,
+          0,
+          1017,
+          2,
+          3
+        ],
+        [
+          1,
+          0,
+          5,
+          4,
+          0,
+          6,
+          6,
+          4,
+          940,
+          8
+        ],
+        [
+          0,
+          0,
+          1,
+          3,
+          3,
+          2,
+          0,
+          2,
+          1,
+          997
+        ]
+      ]
+    }
+  ],
+  "component_table": [
+    {
+      "Component": "Data loading",
+      "Scratch": "ass4_utils -> NumPy (N,C,H,W)",
+      "TensorFlow/Keras": "same arrays, transposed to (N,H,W,C)",
+      "PyTorch": "same arrays"
+    },
+    {
+      "Component": "Preprocessing",
+      "Scratch": "ass4_utils (shared)",
+      "TensorFlow/Keras": "shared",
+      "PyTorch": "shared"
+    },
+    {
+      "Component": "Model definition",
+      "Scratch": "S.Sequential([...])",
+      "TensorFlow/Keras": "keras.Sequential([...])",
+      "PyTorch": "nn.Module (LeNet5)"
+    },
+    {
+      "Component": "C1 / C3 conv",
+      "Scratch": "S.Conv2D(k=5) im2col+matmul",
+      "TensorFlow/Keras": "keras.layers.Conv2D(5)",
+      "PyTorch": "nn.Conv2d(5)"
+    },
+    {
+      "Component": "Activation",
+      "Scratch": "S.ReLU (mask multiply)",
+      "TensorFlow/Keras": "activation='relu'",
+      "PyTorch": "nn.ReLU"
+    },
+    {
+      "Component": "S2 / S4 pooling",
+      "Scratch": "S.MaxPool2D (argmax routing)",
+      "TensorFlow/Keras": "keras.layers.MaxPooling2D",
+      "PyTorch": "nn.MaxPool2d"
+    },
+    {
+      "Component": "Flatten",
+      "Scratch": "S.Flatten (reshape)",
+      "TensorFlow/Keras": "keras.layers.Flatten",
+      "PyTorch": "nn.Flatten"
+    },
+    {
+      "Component": "F5 / F6 / output",
+      "Scratch": "S.Dense (x@W+b)",
+      "TensorFlow/Keras": "keras.layers.Dense",
+      "PyTorch": "nn.Linear"
+    },
+    {
+      "Component": "Loss",
+      "Scratch": "S.SoftmaxCrossEntropy",
+      "TensorFlow/Keras": "SparseCategoricalCrossentropy",
+      "PyTorch": "nn.CrossEntropyLoss"
+    },
+    {
+      "Component": "Gradient",
+      "Scratch": "hand-derived backward + col2im",
+      "TensorFlow/Keras": "automatic (GradientTape)",
+      "PyTorch": "automatic (autograd)"
+    },
+    {
+      "Component": "Optimizer",
+      "Scratch": "S.Adam (written out)",
+      "TensorFlow/Keras": "keras.optimizers.Adam",
+      "PyTorch": "torch.optim.Adam"
+    },
+    {
+      "Component": "Training loop",
+      "Scratch": "explicit for-loop",
+      "TensorFlow/Keras": "model.fit()",
+      "PyTorch": "explicit for-loop"
+    },
+    {
+      "Component": "Evaluation",
+      "Scratch": "predict_classes + sklearn",
+      "TensorFlow/Keras": "predict + sklearn",
+      "PyTorch": "forward + sklearn"
+    },
+    {
+      "Component": "Hardware",
+      "Scratch": "CPU (NumPy)",
+      "TensorFlow/Keras": "CPU (no GPU TF on Windows)",
+      "PyTorch": "GPU (cuDNN)"
+    }
+  ],
+  "baseline_comparison": [
+    {
+      "dataset": "MNIST (10k subset)",
+      "framework": "PyTorch",
+      "CNN 2conv+fc": 0.9835,
+      "LeNet-5": 0.9755,
+      "delta (LeNet - baseline)": -0.008000000000000007
+    },
+    {
+      "dataset": "MNIST (10k subset)",
+      "framework": "Scratch (NumPy)",
+      "CNN 2conv+fc": 0.981,
+      "LeNet-5": 0.9775,
+      "delta (LeNet - baseline)": -0.0034999999999999476
+    },
+    {
+      "dataset": "MNIST (10k subset)",
+      "framework": "TensorFlow/Keras",
+      "CNN 2conv+fc": 0.9755,
+      "LeNet-5": 0.976,
+      "delta (LeNet - baseline)": 0.0004999999999999449
+    },
+    {
+      "dataset": "MNIST (full 60k)",
+      "framework": "PyTorch",
+      "CNN 2conv+fc": 0.9874,
+      "LeNet-5": 0.987,
+      "delta (LeNet - baseline)": -0.00040000000000006697
+    },
+    {
+      "dataset": "MNIST (full 60k)",
+      "framework": "TensorFlow/Keras",
+      "CNN 2conv+fc": 0.9855,
+      "LeNet-5": 0.9859,
+      "delta (LeNet - baseline)": 0.00039999999999995595
+    }
+  ]
+}
