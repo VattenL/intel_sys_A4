@@ -1,0 +1,235 @@
+% Extra preamble injected into pandoc's standalone LaTeX template (XeLaTeX).
+%
+% Only additions belong here. Pandoc's own template already loads fontspec, geometry,
+% graphicx, longtable, booktabs, array, caption, xcolor and hyperref, along with the
+% helper macros its tables and images depend on (\real, \tightlist, \pandocbounded).
+% Loading those again with options is what breaks the build.
+%
+% XeLaTeX rather than pdflatex: the documents are partly Vietnamese, and the notebook
+% output carries box-drawing characters from the Keras and rich summary tables. Both
+% need a Unicode engine plus a system font that actually has the glyphs -- see the
+% font choices in build_latex.py.
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{etoolbox}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{newunicodechar}
+
+% Requested explicitly rather than relied upon: this file lands in the template before
+% some of pandoc's own \usepackage lines, so anything used below has to be asked for
+% here. Re-loading a package with no options is harmless.
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{booktabs}
+
+% ---------------------------------------------------------------------------------
+% Palette. One accent carries the document: headings, rules, links, the title page.
+% Everything else is black on white with a single grey for supporting matter. The
+% accent is the #0b3d62 the HTML pipeline used, so old and new PDFs look like one set.
+% ---------------------------------------------------------------------------------
+\definecolor{accent}{RGB}{11,61,98}
+\definecolor{accentmid}{RGB}{20,83,138}
+\definecolor{accentlight}{RGB}{232,238,244}
+\definecolor{captiontext}{RGB}{90,102,115}
+\definecolor{rulegrey}{RGB}{200,208,216}
+\definecolor{shadecolor}{RGB}{247,248,250}
+\definecolor{outrule}{RGB}{214,220,227}
+
+% hyperref is loaded by pandoc's template after this file, so these settings are
+% deferred; applying them here fails with "Undefined control sequence: \hypersetup".
+\AtBeginDocument{%
+  \hypersetup{
+    colorlinks=true,
+    linkcolor=accent,
+    urlcolor=accentmid,
+    citecolor=accent,
+    linktoc=all,
+    pdfborder={0 0 0},
+  }%
+}
+
+% ---------------------------------------------------------------------------------
+% Characters the main font has no glyph for, or that read better as maths. Cambria
+% covers Vietnamese and the light box-drawing set but not the heavy one; the heavy
+% characters only ever appear inside cell output, which is set in Consolas, so they
+% are left alone. These mappings reach prose only -- \newunicodechar has no effect
+% inside a verbatim environment.
+% ---------------------------------------------------------------------------------
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+\newunicodechar{←}{\ensuremath{\leftarrow}}
+\newunicodechar{↑}{\ensuremath{\uparrow}}
+\newunicodechar{↓}{\ensuremath{\downarrow}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{∂}{\ensuremath{\partial}}
+\newunicodechar{≈}{\ensuremath{\approx}}
+\newunicodechar{−}{\ensuremath{-}}
+\newunicodechar{×}{\ensuremath{\times}}
+\newunicodechar{₁}{\ensuremath{_1}}
+\newunicodechar{₂}{\ensuremath{_2}}
+\newunicodechar{₉}{\ensuremath{_9}}
+\newunicodechar{○}{\ensuremath{\circ}}
+\newunicodechar{●}{\ensuremath{\bullet}}
+
+% ---------------------------------------------------------------------------------
+% Headings. A section opens with an accent rule so the breaks are findable in a long
+% document; subsections stay quiet.
+% ---------------------------------------------------------------------------------
+\titleformat{\section}
+  {\LARGE\bfseries\sffamily\color{accent}}{\thesection}{0.6em}{}
+  [\vspace{-0.5em}{\color{accent}\rule{\linewidth}{1.1pt}}]
+\titleformat{\subsection}
+  {\large\bfseries\sffamily\color{accentmid}}{\thesubsection}{0.6em}{}
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\sffamily\color{accent!80!black}}{\thesubsubsection}{0.6em}{}
+\titlespacing*{\section}{0pt}{0pt}{1.0em}
+\titlespacing*{\subsection}{0pt}{1.3em}{0.45em}
+\titlespacing*{\subsubsection}{0pt}{1.0em}{0.35em}
+
+% How a section opens. build_latex.py picks per document, because the two kinds of
+% source want different things: a prose document has chapters, so \clearpage; an
+% executed notebook is one running narrative of a dozen short sections, and forcing a
+% page break at each one strands a quarter-page of code output ten times over.
+% \Needspace* keeps a heading off the foot of a page without spending the rest of it.
+\usepackage{needspace}
+\providecommand{\sectionbreak}{\Needspace*{9\baselineskip}}
+\pretocmd{\section}{\sectionbreak}{}{\PackageWarning{preamble}{could not patch \string\section}}
+
+% ---------------------------------------------------------------------------------
+% Tables. Notebook output tables are wide; shrinking the font inside every table keeps
+% them in the text block without hand-tuning each one.
+% ---------------------------------------------------------------------------------
+% \RaggedRight in place of \raggedright: pandoc writes the column spec as
+% >{\raggedright\arraybackslash}p{...}, and plain \raggedright switches hyphenation
+% off. Identifiers like SparseCategoricalCrossentropy then cannot break at all and run
+% into the next column. ragged2e's version keeps hyphenation on.
+% The size itself is chosen per table by build_latex.py, which knows how many columns
+% and how much unbreakable text each one holds; a blanket \footnotesize here would
+% undo the \scriptsize it wraps the widest ones in.
+\usepackage{ragged2e}
+% A table wider than the page even at \scriptsize is turned onto a landscape page by
+% build_latex.py rather than shrunk to six-point type.
+\usepackage{pdflscape}
+\AtBeginEnvironment{longtable}{\let\raggedright\RaggedRight}
+\AtBeginEnvironment{tabular}{\let\raggedright\RaggedRight}
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.18}
+\setlength{\aboverulesep}{0.4ex}
+\setlength{\belowrulesep}{0.5ex}
+\setlength{\heavyrulewidth}{0.9pt}
+\setlength{\lightrulewidth}{0.4pt}
+\arrayrulecolor{rulegrey}
+
+% ---------------------------------------------------------------------------------
+% Figures. Matplotlib output is wide and short; a height cap as well as a width one
+% keeps a tall confusion-matrix grid from overflowing the page.
+% ---------------------------------------------------------------------------------
+\setkeys{Gin}{width=0.92\linewidth,height=0.46\textheight,keepaspectratio}
+% These must be mutually consistent: topfraction + bottomfraction above 1 asks for more
+% than a page and LaTeX obliges by running floats off the bottom edge.
+\renewcommand{\topfraction}{0.8}
+\renewcommand{\bottomfraction}{0.2}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\floatpagefraction}{0.7}
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{1}
+\setcounter{totalnumber}{3}
+\setlength{\intextsep}{0.9em}
+% A notebook figure is a result, not decoration: it belongs beside the cell that drew
+% it, so float drift is suppressed rather than merely discouraged.
+\makeatletter
+\renewcommand{\fps@figure}{H}
+\makeatother
+
+% ---------------------------------------------------------------------------------
+% Code. Two kinds, styled differently on purpose:
+%   Shaded/Highlighting  -- pandoc's environment for a fenced python cell: source.
+%   verbatim             -- an indented block, which is what nbconvert writes an
+%                           executed cell's stdout as: output.
+% Long lines (Keras summary tables, 480-column shape dumps) must wrap, not overflow.
+% ---------------------------------------------------------------------------------
+\usepackage{fvextra}
+% No commandchars here. Pandoc's template already sets it on Highlighting, which is the
+% only environment that wants it; setting it globally makes a backslash an escape
+% character inside plain verbatim too, and cell output is full of Windows paths --
+% `saved results\models\01_diabetes130\mlp_scratch.npz` then fails on \models.
+\fvset{breaklines=true,breakanywhere=true,fontsize=\small}
+
+\usepackage{mdframed}
+\newmdenv[
+  linewidth=1.6pt,
+  topline=false,
+  bottomline=false,
+  rightline=false,
+  leftline=true,
+  linecolor=accentmid,
+  innerleftmargin=7pt,
+  innerrightmargin=5pt,
+  innertopmargin=5pt,
+  innerbottommargin=5pt,
+  backgroundcolor=shadecolor,
+  skipabove=0.6em,
+  skipbelow=0.6em,
+]{sourcebox}
+% Replaces pandoc's own `snugshade` wrapper rather than nesting inside it: two boxes
+% around one listing means two backgrounds and two sets of page-break rules.
+\renewenvironment{Shaded}
+  {\setlength{\parskip}{0pt}\begin{sourcebox}}
+  {\end{sourcebox}}
+
+% Cell output: a quieter box, no fill, smaller type. Redefined through fancyvrb so it
+% inherits the \fvset line breaking above -- plain verbatim does not wrap at all, and
+% silently ran a 484-column Keras summary off the right edge.
+\RecustomVerbatimEnvironment{verbatim}{Verbatim}
+  {fontsize=\footnotesize,xleftmargin=6pt,frame=leftline,framerule=1pt,
+   rulecolor=\color{outrule},framesep=6pt}
+
+% ---------------------------------------------------------------------------------
+% Block quotes: an accent bar rather than plain indentation.
+% ---------------------------------------------------------------------------------
+\renewenvironment{quote}
+  {\begin{list}{}{\setlength{\leftmargin}{1.2em}\setlength{\rightmargin}{0pt}}%
+   \item\relax\color{accent!80!black}\itshape}
+  {\end{list}}
+
+% ---------------------------------------------------------------------------------
+% Page furniture. \runninghead is set per document by build_latex.py.
+% ---------------------------------------------------------------------------------
+\providecommand{\runninghead}{}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize\itshape\sffamily\color{captiontext}\runninghead}
+\fancyhead[R]{\footnotesize\bfseries\sffamily\color{accent}\thepage}
+\renewcommand{\headrulewidth}{0.6pt}
+\let\oldheadrule\headrule
+\renewcommand{\headrule}{{\color{rulegrey}\oldheadrule}}
+\fancypagestyle{plain}{\fancyhf{}\renewcommand{\headrulewidth}{0pt}%
+  \fancyfoot[C]{\footnotesize\sffamily\color{captiontext}\thepage}}
+
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+\setlength{\emergencystretch}{3em}
+
+% Discourage widows and orphans, but do not forbid them: at 10000 TeX has no legal
+% breakpoint after a heading, so a float following one is forced onto the page and
+% runs off the bottom edge.
+\widowpenalty=300
+\clubpenalty=300
+
+\setlist[itemize]{topsep=0.35em,itemsep=0.2em,parsep=0pt,leftmargin=1.4em}
+\setlist[enumerate]{topsep=0.35em,itemsep=0.2em,parsep=0pt,leftmargin=1.6em}
+
+% ---------------------------------------------------------------------------------
+% Table of contents
+% ---------------------------------------------------------------------------------
+\setcounter{tocdepth}{2}
+
+% The body must not begin on the page the contents ended on. Pandoc puts
+% \tableofcontents inline, with nothing after it, so the break is attached here.
+\let\origtableofcontents\tableofcontents
+\renewcommand{\tableofcontents}{\origtableofcontents\clearpage}

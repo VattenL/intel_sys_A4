@@ -18,8 +18,24 @@ across three datasets, followed by an architecture-evolution experiment.
 | `results/` | Per-notebook JSON plus `all_runs.csv` |
 | `results/models/` | Trained weights, one folder per notebook — committed, so the networks ship with the code |
 | `results/variant_cache/` | Trained weights for M1..M4 — gitignored, rebuilt by `python prefill_variants.py` |
+| `report/` | LaTeX build for `pdf/01`, `03`, `04`, `05`, `06` — `python report/build_latex.py` |
 
 Run the notebooks in order; `04_compare.ipynb` reads the JSON the first three write.
+
+## Building the PDFs
+
+Three commands, each owning a different part of `pdf/`:
+
+| Command | Produces | How |
+|---|---|---|
+| `python report/build_latex.py` | `01`, `03`, `04`, `05_deep_learning_cnn`, `06` | nbconvert -> Markdown -> pandoc -> XeLaTeX |
+| `python make_report.py` | `README.md`, `02_mnist`, `07_cifar10_lenet` | nbconvert -> HTML -> Chromium print |
+| `python make_docs_pdf.py` | `08`, `09` | Markdown -> HTML -> Chromium print |
+
+The LaTeX route needs `pypandoc-binary` (`pip install pypandoc-binary`) and MiKTeX's
+`xelatex`; the fonts are Cambria, Segoe UI and Consolas, which ship with Windows.
+`python report/build_latex.py 04 --keep` builds one document and leaves the
+intermediate `.tex` and `.log` under `report/build/` for inspection.
 
 ## Environment
 

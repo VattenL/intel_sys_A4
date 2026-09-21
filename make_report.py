@@ -13,6 +13,8 @@ import os
 import subprocess
 import sys
 
+from cover import COVER_CSS, cover_html
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 RESULTS = os.path.join(HERE, "results")
 
@@ -24,6 +26,11 @@ NOTEBOOKS = [
     ("06_mnist_lenet", "MNIST (image, LeNet-5)"),
     ("07_cifar10_lenet", "CIFAR-10 (image, LeNet-5)"),
 ]
+
+# Notebooks whose PDF is produced by report/build_latex.py instead. They are still
+# listed above because build_readme() needs the full inventory; export_pdfs() skips
+# them so the two pipelines cannot both claim the same file in pdf/.
+LATEX_BUILT = {"01_diabetes130", "03_cifar10", "04_compare", "06_mnist_lenet"}
 
 
 def _load(name):
@@ -83,8 +90,24 @@ across three datasets, followed by an architecture-evolution experiment.
 | `results/` | Per-notebook JSON plus `all_runs.csv` |
 | `results/models/` | Trained weights, one folder per notebook — committed, so the networks ship with the code |
 | `results/variant_cache/` | Trained weights for M1..M4 — gitignored, rebuilt by `python prefill_variants.py` |
+| `report/` | LaTeX build for `pdf/01`, `03`, `04`, `05`, `06` — `python report/build_latex.py` |
 
 Run the notebooks in order; `04_compare.ipynb` reads the JSON the first three write.
+
+## Building the PDFs
+
+Three commands, each owning a different part of `pdf/`:
+
+| Command | Produces | How |
+|---|---|---|
+| `python report/build_latex.py` | `01`, `03`, `04`, `05_deep_learning_cnn`, `06` | nbconvert -> Markdown -> pandoc -> XeLaTeX |
+| `python make_report.py` | `README.md`, `02_mnist`, `07_cifar10_lenet` | nbconvert -> HTML -> Chromium print |
+| `python make_docs_pdf.py` | `08`, `09` | Markdown -> HTML -> Chromium print |
+
+The LaTeX route needs `pypandoc-binary` (`pip install pypandoc-binary`) and MiKTeX's
+`xelatex`; the fonts are Cambria, Segoe UI and Consolas, which ship with Windows.
+`python report/build_latex.py 04 --keep` builds one document and leaves the
+intermediate `.tex` and `.log` under `report/build/` for inspection.
 
 ## Environment
 
@@ -356,6 +379,9 @@ def export_pdfs(names):
         browser = pw.chromium.launch()
         try:
             for name in names:
+                if name in LATEX_BUILT:
+                    print(f"skip {name}: built by report/build_latex.py")
+                    continue
                 src = os.path.join(HERE, f"{name}.ipynb")
                 if not os.path.exists(src):
                     print(f"skip {name}: notebook missing")
@@ -393,6 +419,17 @@ def export_pdfs(names):
                         }
                         img, svg { max-width: 100% !important; height: auto !important; }
                     """)
+                    # Cover goes in after the stylesheet so its scoped rules win
+                    # over nbconvert's, and as a direct body child so it is not
+                    # caught by #notebook-container's padding.
+                    cover = cover_html(name)
+                    if cover:
+                        page.add_style_tag(content=COVER_CSS)
+                        page.evaluate(
+                            "html => document.body"
+                            ".insertAdjacentHTML('afterbegin', html)",
+                            cover,
+                        )
                     page.pdf(
                         path=os.path.join(pdf_dir, f"{name}.pdf"),
                         format="A4",

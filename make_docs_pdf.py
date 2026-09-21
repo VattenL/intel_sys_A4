@@ -15,6 +15,8 @@ import sys
 
 import markdown
 
+from cover import COVER_CSS, cover_html
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 PDF_DIR = os.path.join(HERE, "pdf")
 HTML_DIR = os.path.join(HERE, "_html")
@@ -22,8 +24,10 @@ HTML_DIR = os.path.join(HERE, "_html")
 # (markdown source, output basename, footer caption). Footer text is ASCII-only:
 # Chromium renders the header/footer templates with its own font stack, which has
 # no Vietnamese coverage, so accented characters come out as tofu there.
+# theory_notes.md is absent on purpose: pdf/05_deep_learning_cnn.pdf comes from
+# report/build_latex.py now. Listing it here too would have the two pipelines
+# overwrite each other's output depending on which ran last.
 DOCS = [
-    ("theory_notes.md",         "05_deep_learning_cnn",     "Deep Learning va CNN"),
     ("lenet_mnist_report.md",   "08_lenet_mnist_report",    "LeNet-5 tren MNIST"),
     ("lenet_cifar10_report.md", "09_lenet_cifar10_report",  "LeNet-5 tren CIFAR-10"),
 ]
@@ -132,8 +136,8 @@ def build_html(src: str, name: str) -> str:
     with open(html_path, "w", encoding="utf-8") as f:
         f.write(
             "<!doctype html><html lang='vi'><head><meta charset='utf-8'>"
-            f"<title>{name}</title><style>{CSS}</style></head>"
-            f"<body>{body}</body></html>"
+            f"<title>{name}</title><style>{CSS}{COVER_CSS}</style></head>"
+            f"<body>{cover_html(name)}{body}</body></html>"
         )
     return html_path
 
