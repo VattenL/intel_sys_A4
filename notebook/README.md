@@ -4,6 +4,10 @@ Six notebooks that redo the assignment on the datasets in `data/`: one tabular p
 problems, each implemented three ways — **NumPy from scratch**, **TensorFlow/Keras** and **PyTorch** —
 followed by the CNN-improvement experiment from `theory_notes.md` §3.
 
+The three datasets are **BRFSS diabetes** (tabular), **Rice** (images) and **MNIST** (images). MNIST is a
+substitute: the Intel scene data in `data/` arrived without its labels, so it cannot be trained on — see
+§1.2.
+
 These are **written but never executed**. Every cell is empty of output on purpose: they are meant to be
 run once, in order, on the machine that has the GPU. Nothing here depends on the six original notebooks in
 the repository root, and nothing here overwrites their results.
@@ -40,26 +44,36 @@ data/
 ├── rice_image_dataset_info.md
 ├── seg_pred/           7,301 .jpg  (150x150 RGB, NO labels)        ~111 MB
 └── intel_image_classification_info.md
+
+MNIST is NOT copied by hand - torchvision downloads it into data/mnist/ on first run.
 ```
 
 Run `00_inventory.ipynb` first — it checks all of this against the disk and tells you what is missing.
 
-> ### ⚠ The Intel scene dataset is incomplete as delivered
+> ### ⚠ The Intel scene dataset is unusable — MNIST replaces it
 >
 > `data/` contains only `seg_pred/`, which is the original competition's **prediction** set: 7,301 loose
 > files with no class sub-folders. In this dataset the folder name *is* the label, so with no class folders
-> there is no ground truth — you cannot train a classifier on it and you cannot measure an accuracy.
+> there is no ground truth — you cannot train a classifier on it and you cannot measure an accuracy. The
+> labelled splits `seg_train/` (~14,000 images) and `seg_test/` (~3,000) are absent.
 >
-> The labelled splits `seg_train/` (~14,000 images) and `seg_test/` (~3,000) are absent. To restore them:
+> **`03_mnist_cnn.ipynb` fills that slot with MNIST instead**, which `torchvision` downloads automatically
+> on first run (~12 MB into `data/mnist/`). Nothing needs copying by hand. MNIST is a real second image
+> problem — greyscale rather than RGB, ten classes rather than five — and it has a bonus the Intel data
+> could not offer: `02_mnist.ipynb` in the repository root already ran the same architecture on the same
+> subset with the same seed, so §7.2 of notebook 03 doubles as a **reproduction check**.
+>
+> `00_inventory.ipynb` still audits `seg_pred` and documents the gap; that finding is part of the write-up.
+> To go back to the scene data, restore the labelled splits:
 >
 > ```bash
 > pip install kaggle          # needs an API token at ~/.kaggle/kaggle.json
 > kaggle datasets download -d puneet6060/intel-image-classification -p data/ --unzip
 > ```
 >
-> The loader accepts both the flat layout and Kaggle's double-nested `seg_train/seg_train/<class>/`, so no
-> path editing is needed. **Until then, notebook 03 stops at its first cell with these instructions**, and
-> notebooks 00 and 05 simply report it as missing. Everything else runs normally.
+> `ass4_newdata.py` keeps `load_intel_scene()`, `load_intel_unlabeled()` and `require_intel_labels()` for
+> that purpose; the loader accepts both the flat layout and Kaggle's double-nested
+> `seg_train/seg_train/<class>/`.
 
 ### 1.3 Python environment
 
@@ -115,11 +129,11 @@ jupyter lab
 | 00 | `00_inventory.ipynb` | Audits `data/` against the `*_info.md` claims. **Run this first.** | — |
 | 01 | `01_diabetes_brfss.ipynb` | BRFSS diabetes, MLP × 3 frameworks, plus class weighting | — |
 | 02 | `02_rice_cnn.ipynb` | Rice images, CNN × 3 frameworks, subset + full 60k | — |
-| 03 | `03_intel_scene_cnn.ipynb` | Intel scenes, CNN × 3 frameworks + `seg_pred` demo | labelled splits (§1.2) |
+| 03 | `03_mnist_cnn.ipynb` | MNIST, CNN × 3 frameworks, subset + full 60k, plus a reproduction check against `02_mnist.ipynb` | network, first run |
 | 04 | `04_improved_cnn.ipynb` | M1→M4 ladder + data augmentation, on rice | 02's cache helps |
-| 05 | `05_compare.ipynb` | Cross-dataset comparison. **Trains nothing** — reads 01–04's JSON | 01, 02, 04 |
+| 05 | `05_compare.ipynb` | Cross-dataset comparison. **Trains nothing** — reads 01–04's JSON | 01–04 |
 
-03 is optional; 05 detects its absence and skips that section.
+05 skips cleanly over any notebook whose JSON is not there yet.
 
 ### Roughly how long
 
@@ -132,7 +146,8 @@ differ, but the *ratios* will not.
 | 01 diabetes, all 3 legs | ~2–5 min | full 437k rows, including the NumPy leg |
 | 02 rice, scratch leg | ~1–2 min | 5,000 images, 5 epochs |
 | 02 rice, full 60k legs | ~5–15 min | Keras on CPU is the slow one |
-| 03 scenes, scratch leg | **~5–15 min** | 64×64 inputs make `im2col` four times heavier |
+| First MNIST download | seconds | ~12 MB via `torchvision`, once only |
+| 03 MNIST, all legs | ~5–15 min | 10k subset three ways, then 60k twice |
 | 04 ladder, 4 models | ~10–20 min | cached per model; interrupting is safe |
 | 05 compare | seconds | reads JSON only |
 
@@ -153,13 +168,13 @@ notebook/
 ├── models/                       <- trained weights   (git-ignored)
 │   ├── n01_diabetes_brfss/         mlp_scratch.npz, mlp_keras.keras, mlp_torch.pt, + .json sidecars
 │   ├── n02_rice_cnn/               5 models: 3 subset legs + 2 full-data legs
-│   ├── n03_intel_scene_cnn/        same shape, when the labels exist
+│   ├── n03_mnist_cnn/              5 models: 3 subset legs + 2 full-data legs
 │   ├── n04_improved_cnn/           the augmentation pair
 │   └── variant_cache_rice/         M1..M4 weights + per-model JSON (checkpointed)
 └── results/                      <- metrics           (tracked in git)
     ├── n01_diabetes_brfss.json
     ├── n02_rice_cnn.json
-    ├── n03_intel_scene_cnn.json
+    ├── n03_mnist_cnn.json
     ├── n04_improved_cnn.json
     └── all_runs_new.csv            written by notebook 05
 ```
@@ -231,9 +246,13 @@ X_train, y_train, X_test, y_test, meta = load_*(...)
 | `inventory()` | DataFrame of what is on disk, per dataset part |
 | `load_diabetes_brfss(...)` | 546,166 × 19, 3 classes. Options: `binary=`, `split_by_year=`, `drop_year=`, `n_subset=` |
 | `load_rice(img_size=32, ...)` | 75,000 images, 5 classes, stratified 80/20 split |
-| `load_intel_scene(img_size=64, ...)` | 6 classes, the publisher's own train/test split |
+| `load_intel_scene(img_size=64, ...)` | 6 classes, publisher's own split — **unused**, kept for if the labels are restored |
 | `load_intel_unlabeled(...)` | `seg_pred` images, **X only** — there are no labels to return |
 | `require_intel_labels()` | raises with download instructions if the labelled splits are missing |
+
+MNIST does not appear in this table: it comes from `ass4_utils.load_mnist`, the same loader the root
+`02_mnist.ipynb` uses. That is deliberate — notebook 03 must read exactly what the committed run read for
+its reproduction check to mean anything.
 | `class_weights(y, k)` | balanced weights $w_c = N / (K n_c)$, for the imbalance fix in notebook 01 |
 | `use_notebook_model_dir()` | repoints `ass4_utils.MODELS` at `notebook/models/` |
 | `notebook_results_dir()` | creates and returns `notebook/results/` |
@@ -268,13 +287,13 @@ convolution output constant over large regions — **about 65 % of pooling windo
 `eps=1e-3` the check reports ~4e-1 and looks like a failure; at `eps=1e-5` the identical code reports
 ~2e-8. The MLP in notebook 01 has no pooling layer and passes at the default step.
 
-**Accuracy means different things on the two datasets.** The rice classes are exactly balanced at 20 %
-each, so accuracy is trustworthy. BRFSS is split roughly **84 / 2 / 14**, so always answering "no diabetes"
+**Accuracy means different things on the different datasets.** The rice classes are exactly balanced at
+20 % each and MNIST is close to even, so accuracy is trustworthy there. BRFSS is split roughly **84 / 2 / 14**, so always answering "no diabetes"
 scores ~84 % while never identifying a single diabetic. Every table reports **macro F1** alongside, and
 notebook 01 §7 applies class weighting and measures what it trades.
 
-**Notebook 04 trains on a deliberately small slice.** A plain CNN nearly saturates the rice data, and an
-architecture comparison run at the ceiling measures nothing. The M1→M4 ladder therefore uses 4,000 images —
+**Notebook 04 trains on a deliberately small slice.** A plain CNN nearly saturates both the rice data and
+MNIST, and an architecture comparison run at the ceiling measures nothing. The M1→M4 ladder therefore uses 4,000 images —
 the regime where normalisation and regularisation are supposed to matter.
 
 **These are short runs by design.** Five epochs on the dataset notebooks, ten on the ladder, one seed, no
@@ -290,7 +309,8 @@ comparison in which exactly one thing changes at a time, not a competitive score
 | `ModuleNotFoundError: ass4_utils` | Jupyter was started somewhere other than `notebook/`. `cd notebook` first, or fix the `sys.path` lines in the setup cell. |
 | `ModuleNotFoundError: tensorflow` | Python 3.13/3.14 has no TF wheel. Rebuild the environment on 3.11 or 3.12 (§1.3). |
 | `FileNotFoundError: ...diabetes_brfss_2015_2023.csv` | `data/` was not copied across — it is git-ignored (§1.2). |
-| Intel notebook raises at the first cell | Expected. The labelled splits are missing; the error text has the `kaggle` command. |
+| Notebook 03 cannot download MNIST | `torchvision` fetches it on first use; check the network/proxy. Once `data/mnist/` exists it is never re-downloaded. |
+| Notebook 03 §7.2 reports a difference above the noise floor | Worth a look, but not automatically a bug: different TF/PyTorch versions or GPU kernels move the last digits. Parameter counts must still match exactly. |
 | Kernel dies during notebook 02 | Out of memory on the full 60k run. Lower `n_train=` in the `D.load_rice` call. |
 | First run of 02 hangs for minutes | It is decoding 75,000 JPEGs. Once only — watch for `cache hit` on the next run. |
 | `torch.cuda.is_available()` is `False` | CPU-only PyTorch wheel installed. Reinstall with the CUDA index URL (§1.3). Everything still runs, just slower. |
@@ -304,7 +324,7 @@ comparison in which exactly one thing changes at a time, not a competitive score
 | | Original six notebooks | These six |
 |---|---|---|
 | Location | repository root | `notebook/` |
-| Datasets | Diabetes 130-US, MNIST, CIFAR-10 | BRFSS diabetes, Rice, Intel scenes |
+| Datasets | Diabetes 130-US, MNIST, CIFAR-10 | BRFSS diabetes, Rice, MNIST |
 | Loaders | `ass4_utils.load_*` | `ass4_newdata.load_*` |
 | Weights | `results/models/` (committed) | `notebook/models/` (ignored) |
 | Metrics | `results/*.json`, `results/all_runs.csv` | `notebook/results/*.json`, `all_runs_new.csv` |
