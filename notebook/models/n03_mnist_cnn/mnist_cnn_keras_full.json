@@ -1,0 +1,26 @@
+{
+  "name": "mnist_cnn_keras_full",
+  "framework": "keras",
+  "class": "Sequential",
+  "n_params": 20490,
+  "weights_file": "mnist_cnn_keras_full.keras",
+  "self_contained": true,
+  "saved_at": "2026-09-21 23:05:29",
+  "architecture": "CNN 2conv+fc",
+  "dataset": "MNIST (full 60k)",
+  "epochs": 5,
+  "test_accuracy": 0.9855,
+  "f1_macro": 0.9854163541645807,
+  "classes": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9"
+  ]
+}

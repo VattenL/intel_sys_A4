@@ -1,0 +1,15 @@
+{
+  "name": "mlp_torch",
+  "framework": "torch",
+  "class": "BrfssMLP",
+  "n_params": 11011,
+  "weights_file": "mlp_torch.pt",
+  "self_contained": false,
+  "saved_at": "2026-09-21 22:59:17",
+  "architecture": "MLP 19-128-64-3",
+  "dataset": "BRFSS diabetes 2015+2023",
+  "epochs": 15,
+  "test_accuracy": 0.8405610026274112,
+  "f1_macro": 0.3887975272084989,
+  "class_weighted": false
+}

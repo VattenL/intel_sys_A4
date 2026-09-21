@@ -1,0 +1,22 @@
+{
+  "name": "rice_cnn_scratch_subset",
+  "framework": "scratch",
+  "class": "Sequential",
+  "n_params": 544453,
+  "weights_file": "rice_cnn_scratch_subset.npz",
+  "self_contained": false,
+  "saved_at": "2026-09-21 23:03:24",
+  "architecture": "SmallCNN 2conv+fc",
+  "dataset": "Rice (5k subset)",
+  "epochs": 5,
+  "test_accuracy": 0.9445,
+  "f1_macro": 0.9444130359711151,
+  "img_size": 32,
+  "classes": [
+    "Arborio",
+    "Basmati",
+    "Ipsala",
+    "Jasmine",
+    "Karacadag"
+  ]
+}

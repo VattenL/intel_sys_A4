@@ -8,7 +8,7 @@
 # The six original notebooks in the repository root take the opposite view and
 # commit their weights under results/models/ - see the note in notebook/README.md.
 # To follow that convention here instead, delete this rule.
-models/
+
 
 # Decoded-image caches, if anyone points ass4_newdata.CACHE at this folder.
 # The default location is data/cache/, already covered by the root .gitignore.

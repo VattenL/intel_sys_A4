@@ -1,0 +1,22 @@
+{
+  "name": "rice_cnn_keras_full",
+  "framework": "keras",
+  "class": "Sequential",
+  "n_params": 544453,
+  "weights_file": "rice_cnn_keras_full.keras",
+  "self_contained": true,
+  "saved_at": "2026-09-21 23:03:24",
+  "architecture": "SmallCNN 2conv+fc",
+  "dataset": "Rice (full)",
+  "epochs": 5,
+  "test_accuracy": 0.9910666666666667,
+  "f1_macro": 0.9910620795684542,
+  "img_size": 32,
+  "classes": [
+    "Arborio",
+    "Basmati",
+    "Ipsala",
+    "Jasmine",
+    "Karacadag"
+  ]
+}

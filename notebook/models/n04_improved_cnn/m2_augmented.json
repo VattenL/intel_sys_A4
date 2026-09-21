@@ -1,0 +1,15 @@
+{
+  "name": "m2_augmented",
+  "framework": "torch",
+  "class": "VariantCNN",
+  "n_params": 72629,
+  "weights_file": "m2_augmented.pt",
+  "self_contained": false,
+  "saved_at": "2026-09-21 23:06:43",
+  "architecture": "M2 + augmentation",
+  "dataset": "Rice (4k subset)",
+  "epochs": 10,
+  "test_accuracy": 0.9775,
+  "f1_macro": 0.9769502845091959,
+  "augmented": true
+}

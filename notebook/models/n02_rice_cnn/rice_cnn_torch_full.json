@@ -1,0 +1,22 @@
+{
+  "name": "rice_cnn_torch_full",
+  "framework": "torch",
+  "class": "RiceCNN",
+  "n_params": 544453,
+  "weights_file": "rice_cnn_torch_full.pt",
+  "self_contained": false,
+  "saved_at": "2026-09-21 23:03:24",
+  "architecture": "SmallCNN 2conv+fc",
+  "dataset": "Rice (full)",
+  "epochs": 5,
+  "test_accuracy": 0.9928666666666667,
+  "f1_macro": 0.9928660462573108,
+  "img_size": 32,
+  "classes": [
+    "Arborio",
+    "Basmati",
+    "Ipsala",
+    "Jasmine",
+    "Karacadag"
+  ]
+}

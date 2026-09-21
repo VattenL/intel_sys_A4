@@ -1,0 +1,15 @@
+{
+  "name": "mlp_scratch",
+  "framework": "scratch",
+  "class": "Sequential",
+  "n_params": 11011,
+  "weights_file": "mlp_scratch.npz",
+  "self_contained": false,
+  "saved_at": "2026-09-21 22:59:17",
+  "architecture": "MLP 19-128-64-3",
+  "dataset": "BRFSS diabetes 2015+2023",
+  "epochs": 15,
+  "test_accuracy": 0.8403412888046653,
+  "f1_macro": 0.39193055138894867,
+  "class_weighted": false
+}

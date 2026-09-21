@@ -1,0 +1,15 @@
+{
+  "name": "mlp_keras_weighted",
+  "framework": "keras",
+  "class": "Sequential",
+  "n_params": 11011,
+  "weights_file": "mlp_keras_weighted.keras",
+  "self_contained": true,
+  "saved_at": "2026-09-21 22:59:17",
+  "architecture": "MLP 19-128-64-3",
+  "dataset": "BRFSS diabetes 2015+2023",
+  "epochs": 15,
+  "test_accuracy": 0.5921928354984299,
+  "f1_macro": 0.413012513647862,
+  "class_weighted": true
+}

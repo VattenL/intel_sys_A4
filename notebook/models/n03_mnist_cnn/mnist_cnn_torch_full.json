@@ -1,0 +1,26 @@
+{
+  "name": "mnist_cnn_torch_full",
+  "framework": "torch",
+  "class": "MnistCNN",
+  "n_params": 20490,
+  "weights_file": "mnist_cnn_torch_full.pt",
+  "self_contained": false,
+  "saved_at": "2026-09-21 23:05:29",
+  "architecture": "CNN 2conv+fc",
+  "dataset": "MNIST (full 60k)",
+  "epochs": 5,
+  "test_accuracy": 0.9867,
+  "f1_macro": 0.9866213355994337,
+  "classes": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9"
+  ]
+}
